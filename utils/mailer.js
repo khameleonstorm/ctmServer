@@ -28,6 +28,12 @@ function welcomeMail(username, userEmail){
       <title>Welcome CTM Pro!</title>
       <style>
         /* Body styles */
+        *{
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          border: none;
+        }
         body {
           font-family: sans-serif;
           font-size: 22px;
