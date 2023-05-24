@@ -118,4 +118,11 @@ router.post('/signup', async (req, res) => {
 })
 
 
+
+// reset password
+router.post('/reset-password', async(req, res) => {
+  
+})
+
+
 module.exports = router

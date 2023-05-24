@@ -64,7 +64,7 @@ router.post('/', async (req, res) => {
 // updating a deposit
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
-  const { type, from, method, hash, amount, status } = req.body;
+  const { from, amount, status } = req.body;
   const { error } = validateDeposit(req.body);
 
   if (error)  return res.status(400).send({message: error.details[0].message})
@@ -77,7 +77,7 @@ router.put('/:id', async (req, res) => {
   
   try {
     const [updatedDeposit, updatedUser] = await Promise.all([
-      Deposit.findByIdAndUpdate(id, { type, from, method, hash, amount, status }, { new: true }),
+      Deposit.findByIdAndUpdate(id, { from, amount, status }, { new: true }),
       User.findOneAndUpdate({ email: from }, { $inc: { balance: amount } }, { new: true })
     ]);
 
