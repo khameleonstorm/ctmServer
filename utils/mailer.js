@@ -13,6 +13,9 @@ let transporter = nodemailer.createTransport({
   }
 });
 
+
+
+
 function welcomeMail(username, userEmail){
   // setup email data
   let mailOptions = {
@@ -157,4 +160,139 @@ function welcomeMail(username, userEmail){
 
 }
 
+
+
+// Password reset mail
+function passwordReset(userEmail){
+  // setup email data
+  let mailOptions = {
+    from: `${process.env.SMTP_USER}`,
+    to: `${userEmail}`,
+    subject: 'Password Reset!',
+    html: `
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>Reset Password</title>
+      <style>
+        *{
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          border: none;
+        }
+        body {
+          font-family: sans-serif;
+          font-size: 22px;
+          line-height: 1.3;
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        a{
+          text-decoration: none;
+        }
+
+        /* Main content styles */
+        main {
+          max-width: 600px;
+          margin: 0 auto;
+          background-color: #fafafa;
+          padding: 20px;
+        }
+
+        .logo{
+          width: 200px;
+          margin-left: -20px;
+        }
+
+        h3{
+          font-size: 1.3rem;
+          font-weight: 700;
+          margin-top: -10px;
+        }
+
+        .bigp {
+          margin-bottom: 20px;
+        }
+
+        /* Button styles */
+        .button {
+          display: inline-block;
+          background-color: #00b35f;
+          color: white;
+          text-align: center;
+          padding: 18px 50px;
+          border-radius: 13px;
+          margin-bottom: 10px;
+          font-weight: 600;
+        }
+
+        .button:hover {
+          background-color: #01e001;
+        }
+
+                  
+        @media screen and (max-width: 500px){
+          body{
+            font-size: 17px;
+          }
+
+          .logo{
+            width: 50%;
+            margin-left: -12px;
+          }
+
+          main {
+            max-width: 100%;
+            height: 100vh;
+          }
+
+          h3{
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding-bottom: 40px;
+          }
+          
+          .bigp{
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+          }
+
+          .button {
+            width: 100%;
+            font-size: 1rem;
+            padding: 20px 0;
+            text-align: center;
+          }
+
+        }
+      </style>
+    </head>
+    <body>
+      <main>
+        <img class="logo" src="https://i.ibb.co/rkNR6rQ/ctm-logo.png" alt="logo">
+        <p class="bigp">Click the button to reset password!</p>
+        <a href="https://ctm-azure.vercel.app/forgotPassword/${userEmail}"><button class="button">Reset Password</button></a>
+        <p>If you have any questions or need assistance, please don't hesitate to contact us.</p>
+        <p>Best Regard</p>
+        <h3>CTM Pro Team</h3>
+      </main>
+    </body>
+  </html>
+    `,
+};
+
+  // send mail with defined transport object
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (!error) return  console.log(info.messageId)
+    else console.log(error)
+    transporter.close();
+  });
+
+}
+
 exports.welcomeMail = welcomeMail;
+exports.passwordReset = passwordReset;
