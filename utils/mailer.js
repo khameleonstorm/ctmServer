@@ -10,153 +10,97 @@ let transporter = nodemailer.createTransport({
   auth: {
     user: `${process.env.SMTP_USER}`,
     pass: `${process.env.SMTP_PASSWORD}`
-  }
+  },
+  tls: {
+    // do not fail on invalid certs
+    rejectUnauthorized: false,
+  },
 });
 
 
 
 
-function welcomeMail(username, userEmail){
+async function welcomeMail(username, userEmail){
   // setup email data
   let mailOptions = {
-    from: `${process.env.SMTP_USER}`,
+    from: "info@ctmpro.co.uk",
     to: `${userEmail}`,
     subject: 'Welcome!',
     html: `
     <html>
     <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <meta name="theme-color" content="#000000" />
       <title>Welcome CTM Pro!</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <style>
-        /* Body styles */
-        *{
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-          border: none;
-        }
-        body {
-          font-family: sans-serif;
-          font-size: 22px;
-          line-height: 1.3;
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-        }
-
+    
+          main {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fafafa;
+            padding: 20px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+          }
+  
         a{
           text-decoration: none;
+          color: inherit;
         }
-
-        /* Main content styles */
-        main {
-          max-width: 600px;
-          margin: 0 auto;
-          background-color: #fafafa;
-          padding: 20px;
+  
+        h1{
+          font-size: 5.5rem;
+          filter: drop-shadow(0px 5px 5px rgba(0, 0, 0, 0.1));
+          font-weight: 800;
+          color: #00b35f;
+          letter-spacing: -6px;
+          line-height: .8;
         }
-
-        .logo{
-          width: 200px;
-          margin-left: -20px;
-        }
-
-        h2{
+  
+        h1 span{
           font-size: 2rem;
-          font-weight: 700;
+          font-weight: 200;
+          color: #000000a9;
+          letter-spacing: -2px;
         }
-
-        h3{
-          font-size: 1.3rem;
-          font-weight: 700;
-          margin-top: -10px;
-        }
-
+  
         .bigp {
-          margin-bottom: 20px;
+          font-size: 1.2rem;
+          line-height: 1.5;
+          font-weight: 500;
         }
-
-        /* Button styles */
+  
         .button {
-          display: inline-block;
-          background-color: #00b35f;
-          color: white;
+          width: 100%;
+          max-width: 300px;
+          background-color: rgba(0, 179, 95, 0.05);
+          border: 0.5px solid rgba(0, 179, 95, 0.7);
           text-align: center;
-          padding: 19px 50px;
-          border-radius: 10px;
-          margin-bottom: 10px;
-          font-weight: 600;
+          padding: 20px;
+          border-radius: 15px;
+          font-weight: 500;
         }
-
-        .button:hover {
-          background-color: #01e001;
-        }
-
-                  
-        @media screen and (max-width: 500px){
-          body{
-            font-size: 17px;
-          }
-
-          .logo{
-            width: 50%;
-            margin-left: -12px;
-          }
-
-          main {
-            max-width: 100%;
-            height: 100vh;
-          }
-
-          h2{
-            font-size: 1.5rem;
-          }
-
-          h3{
-            font-size: 1.1rem;
-            font-weight: 600;
-            padding-bottom: 40px;
-          }
-          
-          .bigp{
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-          }
-
-          .button {
-            width: 100%;
-            font-size: 1rem;
-            padding: 20px 0;
-            text-align: center;
-          }
-
-        }
+  
       </style>
     </head>
     <body>
-      <main>
-        <img class="logo" src="https://i.ibb.co/rkNR6rQ/ctm-logo.png" alt="logo">
-        <h2>Hello! ${username}</h2>
-        <p class="bigp">We're thrilled to have you join our community!</p>
-        <p class="bigp">Please verify! your email address to access more services from CTM Pro!</p>
-        <a href="http://localhost:3000/verify/${userEmail}"><button class="button">Verify your email address</button></a>
-        <p>If you have any questions or need assistance, please don't hesitate to contact us.</p>
-        <p>Best Regard</p>
-        <h3>CTM Pro Team</h3>
-      </main>
+    <main>
+      <h1><span>Welcome To</span><br /> CtmPro</h1>
+      <p class="bigp">HelloOO! ${username}</p>
+      <p class="bigp">We're thrilled to have you join our community.
+        Please verify! your email address to access more services from CtmPro!
+      </p>
+      <a href="https://ctm-azure.vercel.app/verify/${userEmail}" class="button">Verify Your Email Address</a>
+    </main>
     </body>
   </html>
     `,
   };
   
-  // send mail with defined transport object
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (!error) return  console.log(info.messageId)
-    else console.log(error)
-    transporter.close();
-  });
+  
+  let info = await transporter.sendMail(mailOptions)
+  console.log("Message sent: %s", info.messageId);
 
 }
 
@@ -172,125 +116,68 @@ function passwordReset(userEmail){
     html: `
     <html>
     <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <title>Reset Password</title>
+      <title>Password Reset</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <style>
-        *{
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-          border: none;
-        }
-        body {
-          font-family: sans-serif;
-          font-size: 22px;
-          line-height: 1.3;
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-        }
-
+    
+          main {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fafafa;
+            padding: 20px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+          }
+  
         a{
           text-decoration: none;
+          color: inherit;
         }
-
-        /* Main content styles */
-        main {
-          max-width: 600px;
-          margin: 0 auto;
-          background-color: #fafafa;
-          padding: 20px;
+  
+        h1{
+          font-size: 5.5rem;
+          filter: drop-shadow(0px 5px 5px rgba(0, 0, 0, 0.1));
+          font-weight: 800;
+          color: #00b35f;
+          letter-spacing: -6px;
+          line-height: .8;
         }
-
-        .logo{
-          width: 200px;
-          margin-left: -20px;
-        }
-
-        h3{
-          font-size: 1.3rem;
-          font-weight: 700;
-          margin-top: -10px;
-        }
-
+  
         .bigp {
-          margin-bottom: 20px;
+          font-size: 1.2rem;
+          line-height: 1.5;
+          font-weight: 500;
         }
-
-        /* Button styles */
+  
         .button {
-          display: inline-block;
-          background-color: #00b35f;
-          color: white;
+          width: 100%;
+          max-width: 300px;
+          background-color: rgba(0, 179, 95, 0.05);
+          border: 0.5px solid rgba(0, 179, 95, 0.7);
           text-align: center;
-          padding: 18px 50px;
-          border-radius: 13px;
-          margin-bottom: 10px;
-          font-weight: 600;
+          padding: 20px;
+          border-radius: 15px;
+          font-weight: 500;
         }
-
-        .button:hover {
-          background-color: #01e001;
-        }
-
-                  
-        @media screen and (max-width: 500px){
-          body{
-            font-size: 17px;
-          }
-
-          .logo{
-            width: 50%;
-            margin-left: -12px;
-          }
-
-          main {
-            max-width: 100%;
-            height: 100vh;
-          }
-
-          h3{
-            font-size: 1.1rem;
-            font-weight: 600;
-            padding-bottom: 40px;
-          }
-          
-          .bigp{
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-          }
-
-          .button {
-            width: 100%;
-            font-size: 1rem;
-            padding: 20px 0;
-            text-align: center;
-          }
-
-        }
+  
       </style>
     </head>
     <body>
       <main>
-        <img class="logo" src="https://i.ibb.co/rkNR6rQ/ctm-logo.png" alt="logo">
-        <p class="bigp">Click the button to reset password!</p>
-        <a href="https://ctm-azure.vercel.app/forgotPassword/${userEmail}"><button class="button">Reset Password</button></a>
-        <p>If you have any questions or need assistance, please don't hesitate to contact us.</p>
-        <p>Best Regard</p>
-        <h3>CTM Pro Team</h3>
+        <h1>CtmPro</h1>
+        <p class="bigp">A request was sent for password reset, if this wasn't you please contact our customer service. Click the reset link below to proceed</p>
+        <a href="https://ctm-azure.vercel.app/forgotPassword/newPassword" class="button">Reset Password</a>
       </main>
     </body>
   </html>
     `,
 };
 
-  // send mail with defined transport object
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (!error) return  console.log(info.messageId)
-    else console.log(error)
-    transporter.close();
-  });
+
+let info = transporter.sendMail(mailOptions)
+console.log("Message sent: %s", info.messageId);
 
 }
 
