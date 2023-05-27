@@ -47,4 +47,21 @@ router.post('/', async (req, res) => {
 });
 
 
+// approving a nin
+router.put('/:id', async (req, res) => {
+  const { id } = req.params;
+  const { error } = validateNin(req.body);
+  if (error) return res.status(400).send({message: error.details[0].message});
+
+  try {
+    const user = User.findById(id);
+    if (!user) return res.status(404).send({message: "User not found..."})
+    user.idVerified = true;
+
+    const result = await user.save();
+    res.send(result);
+  } catch (e) { for(i in e.errors) res.status(500).send({message: e.errors[i].message}) }
+});
+
+
 module.exports = router;

@@ -2,7 +2,6 @@ const express = require('express')
 const { Trade, validateTrade } = require("../models/trade")
 const { User } = require("../models/user")
 const { Util } = require("../models/util")
-const { io } = require('../server')
 
 const router  = express.Router()
 
@@ -62,7 +61,8 @@ router.post('/', async (req, res) => {
     const trade = new Trade({ email, amount, spread });
     await Promise.all([user.save(), trade.save()]);
 
-    io.emit('change', { email, amount, spread });
+    req.app.io.emit('change');
+    req.app.io.emit('tradeProgressUpdated');
     res.status(200).send({ trade, margin, spread });
   } catch (error) { for (i in error.errors) res.status(500).send({message: error.errors[i].message}) }
 });

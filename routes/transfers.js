@@ -1,7 +1,6 @@
 const express = require('express')
 const { Transfer, validateTransfer } = require("../models/transaction")
 const { User } = require("../models/user")
-const { io } = require('../server')
 
 const router  = express.Router()
 
@@ -59,7 +58,7 @@ router.post('/toTrade', async (req, res) => {
 
     const transfer = new Transfer({ type, from, to, amount, status, method });
     await Promise.all([user.save(), transfer.save()]);
-    io.emit('change');
+    req.app.io.emit('change');
     res.send(user);
   } catch(e){ for(i in e.errors) res.status(500).send({message: e.errors[i].message}) }
 });
@@ -91,7 +90,7 @@ router.post('/fromTrade', async (req, res) => {
     const transfer = new Transfer({ type, from, to, amount, status, method });
     await Promise.all([user.save(), transfer.save()]);
 
-    io.emit('change');
+    req.app.io.emit('change');
     res.send(user);
   } catch(e){ for(i in e.errors) res.status(500).send({message: e.errors[i].message}) }
 });
@@ -122,7 +121,7 @@ router.post('/toUser', async (req, res) => {
     const transfer = new Transfer({ type, from, to, amount, status, method });
     await Promise.all([userFrom.save(), userTo.save(), transfer.save()]);
 
-    io.emit('change');
+    req.app.io.emit('change');
     res.send({...userFrom, ...userTo});
   } catch(e){ for(i in e.errors) res.status(500).send({message: e.errors[i].message}) }
 });
