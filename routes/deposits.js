@@ -81,6 +81,8 @@ router.put('/:id', async (req, res) => {
       User.findOneAndUpdate({ email: from }, { $inc: { balance: amount } }, { new: true })
     ]);
 
+    console.log(amount, updatedUser.balance)
+
     if (!updatedDeposit || !updatedUser) throw new Error('Failed to update deposit and user')
 
     res.send(updatedDeposit);
