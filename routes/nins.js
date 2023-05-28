@@ -48,13 +48,11 @@ router.post('/', async (req, res) => {
 
 
 // approving a nin
-router.put('/:id', async (req, res) => {
-  const { id } = req.params;
-  const { error } = validateNin(req.body);
-  if (error) return res.status(400).send({message: error.details[0].message});
+router.put('/', async (req, res) => {
+  const { email } = req.params;
 
   try {
-    const user = User.findById(id);
+    const user = User.find({ email });
     if (!user) return res.status(404).send({message: "User not found..."})
     user.idVerified = true;
 
