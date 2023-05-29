@@ -81,7 +81,7 @@ router.post('/login', async(req, res) => {
   
     const token = await user.genAuthToken()
     res.send({token, user})
-  } catch (error) { return res.status(400).send({message: "Something Went Wrong..."}) }
+  } catch (error) { for(i in e.errors) res.status(500).send({message: e.errors[i].message}) }
 })
 
 

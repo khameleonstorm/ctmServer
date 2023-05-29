@@ -1,6 +1,7 @@
 const express = require('express')
 const { Deposit, validateDeposit } = require("../models/transaction")
 const { User } = require("../models/user")
+const { alertAdmin } = require("../utils/mailer")
 
 const router  = express.Router()
 
@@ -56,6 +57,9 @@ router.post('/', async (req, res) => {
     const deposit = new Deposit({ type, from, method, hash, amount });
     await deposit.save();
 
+    const date = deposit.createdAt;
+
+    alertAdmin(from, amount, date, type)
     res.send({message: 'Deposit successful', deposit});
   } catch(e){ for(i in e.errors) res.status(500).send({message: e.errors[i].message}) }
 });

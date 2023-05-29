@@ -1,6 +1,7 @@
 const express = require('express')
 const { Withdrawal, validateWithdrawal } = require("../models/transaction")
 const { User } = require("../models/user")
+const { alertAdmin } = require("../utils/mailer")
 
 
 const router  = express.Router()
@@ -57,7 +58,9 @@ router.post('/', async (req, res) => {
     // Create a new Withdrawal instance
     const withdrawal = new Withdrawal({ type, from, method, wallet, amount });
     await withdrawal.save();
+    const date = withdrawal.createdAt;
 
+    alertAdmin(from, amount, date, type)
     res.send(withdrawal);
   } catch(e){ for(i in e.errors) res.status(500).send({message: e.errors[i].message}) }
 })
