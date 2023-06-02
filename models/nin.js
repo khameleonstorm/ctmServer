@@ -19,8 +19,8 @@ const ninSchema = new mongoose.Schema({
   nin: {
     type: String,
     required: true,
-    minLength: 10,
-    maxLength: 10
+    minLength: 5,
+    maxLength: 225
   },
 });
 
@@ -35,7 +35,7 @@ function validateNin(nin) {
   const schema = Joi.object({
     name: Joi.string().min(5).max(225).required(),
     email: Joi.string().min(5).max(225).required(),
-    nin: Joi.string().min(10).max(10).required(),
+    nin: Joi.string().min(5).max(225).required(),
   });
 
   return schema.validate(nin);

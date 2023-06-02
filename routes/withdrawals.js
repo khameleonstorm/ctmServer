@@ -53,6 +53,8 @@ router.post('/', async (req, res) => {
 
   const user = await User.findOne({ email: from });
   if (!user) return res.status(404).send({message: 'User not found'})
+
+  if (user.balance < amount) return res.status(400).send({message: 'Insufficient balance'})
   
   try {
     // Create a new Withdrawal instance
