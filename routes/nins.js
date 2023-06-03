@@ -30,11 +30,11 @@ router.post('/', async (req, res) => {
   const { error } = validateNin(req.body);
 
   if (error) return res.status(400).send({message: error.details[0].message});
+  console.log(req.body)
 
-  // check if nin and user already exists
-  if (Nin.findOne({ nin })) return res.status(400).send({message: 'Nin already exists'});
-  if (User.findOne({ email })) return res.status(400).send({message: 'User already exists'});
-
+  // check if nin already exists
+  let userNin = await Nin.findOne({ $or: [{email}, {nin}] })
+  if (userNin) return res.status(400).send({message: 'Nin already exists'});
 
   const newNin = new Nin({ name, email, nin });
   try {
