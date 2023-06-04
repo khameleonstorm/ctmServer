@@ -49,15 +49,21 @@ router.post('/', async (req, res) => {
 
 // approving a nin
 router.put('/', async (req, res) => {
-  const { email } = req.params;
+  const { email, nin } = req.body;
 
+  
   try {
-    const user = User.find({ email });
+    let user = await User.findOne({ email });
+    let userNin = await Nin.findOne({ $or: [{email}, {nin}] })
     if (!user) return res.status(404).send({message: "User not found..."})
+    if (!userNin) return res.status(404).send({message: "Nin not found..."})
+    
+    userNin.status = true;
     user.idVerified = true;
+    console.log(userNin, user)
 
-    const result = await user.save();
-    res.send(result);
+    await Promise.all([user.save(), userNin.save()]);
+    res.send({message: "Nin approved successfully..."});
   } catch (e) { for(i in e.errors) res.status(500).send({message: e.errors[i].message}) }
 });
 

@@ -22,6 +22,10 @@ const ninSchema = new mongoose.Schema({
     minLength: 5,
     maxLength: 225
   },
+  status: {
+    type: Boolean,
+    default: false
+  }
 });
 
 
