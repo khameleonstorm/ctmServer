@@ -19,7 +19,6 @@ const utilSchema = new mongoose.Schema({
     type: Number,
     default: 5600991795,
     minLength: 1,
-    maxLength: 10
   },
   bankName: {
     type: String,
@@ -31,7 +30,7 @@ const utilSchema = new mongoose.Schema({
     type: String,
     default: "USDT",
     minLength: 1,
-    maxLength: 20
+    maxLength: 225
   },
   walletAddress: {
     type: String,
@@ -42,12 +41,10 @@ const utilSchema = new mongoose.Schema({
   rate: {
     type: Number,
     default: 755,
-    maxLength: 20
   },
   bonus: {
     type: Number,
     default: 1,
-    maxLength: 20
   },
 });
 
@@ -59,14 +56,14 @@ const Util = mongoose.model("Util", utilSchema);
 // validate util
 function validateUtil(util) {
   const schema = Joi.object({
-    margin: Joi.number().min(0).max(20),
+    margin: Joi.number().min(0),
     accountName: Joi.string().min(5).max(225),
     bankName: Joi.string().min(1).max(225),
-    accountNumber: Joi.number().min(1).max(10),
-    walletCoin: Joi.string().min(1).max(20),
+    accountNumber: Joi.number().min(1),
+    walletCoin: Joi.string().min(1).max(225),
     walletAddress: Joi.string().min(10).max(225),
-    rate: Joi.number().min(0).max(20),
-    bonus: Joi.number().min(0).max(20),
+    rate: Joi.number().min(0),
+    bonus: Joi.number().min(0),
   });
   return schema.validate(util);
 }
