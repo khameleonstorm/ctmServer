@@ -91,8 +91,7 @@ router.put('/:id', async (req, res) => {
     withdrawal.status = status;
 
     await Promise.all([user.save(), withdrawal.save()]);
-
-    res.send(user);
+    res.send({message: 'Withdrawal updated successfully...'});
   } catch(e){ for(i in e.errors) res.status(500).send({message: e.errors[i].message}) }
 });
 

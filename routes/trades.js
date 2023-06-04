@@ -52,7 +52,7 @@ router.post('/', async (req, res) => {
 
   user.trade -= amount;
 
-  const { margin } = await Util.findById('64651c2d2d1c6590fc72daad');
+  const { margin } = await Util.findById('647cd9ec3c6d2b0f516b962f');
   if(!margin) return res.status(404).send({message: 'Margin not found'})
 
   const spread = amount * margin

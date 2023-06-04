@@ -57,7 +57,7 @@ router.post('/', async (req, res) => {
     const deposit = new Deposit({ type, from, method, hash, amount });
     await deposit.save();
 
-    const date = deposit.createdAt;
+    const date = deposit.date;
 
     alertAdmin(from, amount, date, type)
     res.send({message: 'Deposit successful', deposit});
