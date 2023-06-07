@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt')
 const express = require('express')
 const { User, validateUser, validateLogin } = require("../models/user")
+const { Util } = require("../models/util")
 const { welcomeMail, passwordReset } = require("../utils/mailer")
 
 const router  = express.Router()
@@ -97,6 +98,7 @@ router.post('/signup', async (req, res) => {
   if(user) return res.status(400).send({message: "username or email already exists"})
 
   let refUser = await User.findOne({ username: referredBy})
+  const util = await Util.findOne()
 
   user = new User({fullName, username, email, password, country, phone, referredBy: refUser?.username})
 
@@ -108,7 +110,7 @@ router.post('/signup', async (req, res) => {
     const token = await user.genAuthToken()
 
     if(refUser) {
-      refUser.bonus + 1
+      refUser.bonus + util.bonus
       refUser = await refUser.save()
     }
 
