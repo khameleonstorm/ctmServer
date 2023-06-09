@@ -20,7 +20,7 @@ let transporter = nodemailer.createTransport({
 
 
 
-async function welcomeMail(username, userEmail){
+async function welcomeMail(userEmail){
   // setup email data
   let mailOptions = {
     from: "info@ctmpro.co.uk",
@@ -32,7 +32,67 @@ async function welcomeMail(username, userEmail){
       <title>Welcome CTM Pro!</title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <style>
-    
+        main {
+          width: 100%;
+          max-width: 400px;
+          margin: 0 auto;
+          background-color: #fafafa;
+          padding: 20px;
+          border-radius: 15px;
+          display: flex;
+          flex-direction: column;
+        }
+  
+        .bigp {
+          font-size: 1.2rem;
+          line-height: 1.5;
+          font-weight: 500;
+        }
+      </style>
+    </head>
+    <body>
+    <main>
+      <img style="width: 90%;" src="https://www.ctmpro.co/static/media/logo.ca0cdbc6d61ddc5b8dfc.png" alt="CtmPro Logo" />
+      <p class="bigp">Hello, Welcome to CtmPro!</p>
+      <p>We're excited to have you onboard and we hope you enjoy your experience with us. </p>
+      <p class="bigp">Here's what you can do with us:</p>
+      <p class="bigp">Exchange Digital Currencies</p>
+      <p>Do you want to Buy or Sell crypto? You can exchange your crypto at the black market rate, no KYC required.</p>
+      <p class="bigp">Buy USDT with funds in your digital wallet providers</p>
+      <p>Use your Skrill, PayPal, perfect money, wise, Apple Pay, Google pay, Venmo, Zelle to purchase USDT.</p>
+      <p class="bigp">Grow your money daily with CtmPro Bot</p>
+      <p>
+        Want to earn from 3.5% to 15% daily? CtmPro bot is an automated crypto flipping bot  
+        capable of processing crypto flipping transactions 24/7 leaving users with daily profit.
+      </p>
+      <p class="bigp">How to reach us.</p>
+      <p>Check our website for contact details or you can kindly email us info@ctmpro.co</p>
+    </main>
+    </body>
+  </html>
+    `,
+  };
+  
+  
+  let info = await transporter.sendMail(mailOptions)
+  console.log("Message sent: %s", info.messageId);
+
+}
+
+
+
+async function verifyMail(userEmail){
+  // setup email data
+  let mailOptions = {
+    from: "info@ctmpro.co.uk",
+    to: `${userEmail}`,
+    subject: 'Verify Your Email Address!',
+    html: `
+    <html>
+      <head>
+        <title>Verify Your Email</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <style>
           main {
             width: 100%;
             max-width: 400px;
@@ -43,58 +103,40 @@ async function welcomeMail(username, userEmail){
             display: flex;
             flex-direction: column;
           }
-  
-        a{
-          text-decoration: none;
-          color: inherit;
-        }
-  
-        h1{
-          font-size: 5.5rem;
-          filter: drop-shadow(0px 5px 5px rgba(0, 0, 0, 0.1));
-          font-weight: 800;
-          color: #00b35f;
-          letter-spacing: -6px;
-          line-height: .8;
-        }
-  
-        h1 span{
-          font-size: 2rem;
-          font-weight: 200;
-          color: #000000a9;
-          letter-spacing: -2px;
-        }
-  
-        .bigp {
-          font-size: 1.2rem;
-          line-height: 1.5;
-          font-weight: 500;
-        }
-  
-        .button {
-          width: 100%;
-          max-width: 300px;
-          background-color: rgba(0, 179, 95, 0.05);
-          border: 0.5px solid rgba(0, 179, 95, 0.7);
-          text-align: center;
-          padding: 20px;
-          border-radius: 15px;
-          font-weight: 500;
-        }
-  
-      </style>
-    </head>
-    <body>
-    <main>
-      <h1><span>Welcome To</span><br /> CtmPro</h1>
-      <p class="bigp">HelloOO! ${username}</p>
-      <p class="bigp">We're thrilled to have you join our community.
-        Please verify! your email address to access more services from CtmPro!
-      </p>
-      <a href="https://ctmpro.co/verify/${userEmail}" class="button">Verify Your Email Address</a>
-    </main>
-    </body>
-  </html>
+
+          a{
+            text-decoration: none;
+            color: black;
+          }
+
+          p {
+            font-size: 1.2rem;
+            line-height: 1.5;
+            font-weight: 500;
+          }
+
+          .button {
+            width: 100%;
+            max-width: 300px;
+            background-color: rgba(0, 179, 95, 0.05);
+            border: 0.5px solid rgba(0, 179, 95, 0.7);
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            font-weight: 500;
+          }
+        </style>
+      </head>
+      <body>
+      <main>
+        <img style="width: 90%;" src="https://www.ctmpro.co/static/media/logo.ca0cdbc6d61ddc5b8dfc.png" alt="CtmPro Logo" />
+        <p>At CtmPro, we take your security and privacy very seriously.  </p>
+        <p>We require all users to verify their email address before they can use their account.</p>
+        <p>Please click the button below to verify your email address.</p>
+        <a href="https://ctmpro.co/verify/${userEmail}" class="button">Verify Your Email Address</a>
+      </main>
+      </body>
+    </html>
     `,
   };
   
@@ -120,29 +162,20 @@ function passwordReset(userEmail){
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <style>
     
-          main {
-            width: 100%;
-            max-width: 400px;
-            margin: 0 auto;
-            background-color: #fafafa;
-            padding: 20px;
-            border-radius: 15px;
-            display: flex;
-            flex-direction: column;
-          }
+        main {
+          width: 100%;
+          max-width: 400px;
+          margin: 0 auto;
+          background-color: #fafafa;
+          padding: 20px;
+          border-radius: 15px;
+          display: flex;
+          flex-direction: column;
+        }
   
         a{
           text-decoration: none;
-          color: inherit;
-        }
-  
-        h1{
-          font-size: 5.5rem;
-          filter: drop-shadow(0px 5px 5px rgba(0, 0, 0, 0.1));
-          font-weight: 800;
-          color: #00b35f;
-          letter-spacing: -6px;
-          line-height: .8;
+          color: black;
         }
   
         .bigp {
@@ -166,7 +199,7 @@ function passwordReset(userEmail){
     </head>
     <body>
       <main>
-        <h1>CtmPro</h1>
+        <img style="width: 90%;" src="https://www.ctmpro.co/static/media/logo.ca0cdbc6d61ddc5b8dfc.png" alt="CtmPro Logo" />
         <p class="bigp">A request was sent for password reset, if this wasn't you please contact our customer service. Click the reset link below to proceed</p>
         <a href="https://ctmpro.co/forgotPassword/newPassword" class="button">Reset Password</a>
       </main>
@@ -213,15 +246,6 @@ function alertAdmin(email, amount, date, type){
           color: inherit;
         }
   
-        h1{
-          font-size: 5.5rem;
-          filter: drop-shadow(0px 5px 5px rgba(0, 0, 0, 0.1));
-          font-weight: 800;
-          color: #00b35f;
-          letter-spacing: -6px;
-          line-height: .8;
-        }
-  
         .bigp {
           font-size: 1.2rem;
           line-height: 1.5;
@@ -232,8 +256,9 @@ function alertAdmin(email, amount, date, type){
     </head>
     <body>
       <main>
-        <h1>CtmPro</h1>
+      <img style="width: 90%;" src="https://www.ctmpro.co/static/media/logo.ca0cdbc6d61ddc5b8dfc.png" alt="CtmPro Logo" />
         <p class="bigp">A ${type} request of $${amount} was initiated by a user with this email: ${email}, date: ${date}</p>
+      </main>
     </body>
   </html>
     `,
@@ -245,6 +270,7 @@ console.log("Message sent: %s", info.messageId);
 
 }
 
+exports.verifyMail = verifyMail;
 exports.alertAdmin = alertAdmin;
 exports.welcomeMail = welcomeMail;
 exports.passwordReset = passwordReset;

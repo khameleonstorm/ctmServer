@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt')
 const express = require('express')
 const { User, validateUser, validateLogin } = require("../models/user")
 const { Util } = require("../models/util")
-const { welcomeMail, passwordReset } = require("../utils/mailer")
+const { welcomeMail, passwordReset, verifyMail } = require("../utils/mailer")
 
 const router  = express.Router()
 
@@ -60,7 +60,7 @@ router.post('/resend-email', async(req, res) => {
     let user = await User.findOne({ email })
     if(!user) return res.status(400).send({message: "user not found"})
     if(user.isVerified) return res.status(400).send({message: "User already verified"})
-    welcomeMail(user.username, user.email)
+    verifyMail(user.email)
   
     res.send({message: "Email sent successfully"})
   } catch (error) { return res.status(500).send({message: "Something Went Wrong..."}) }
@@ -106,7 +106,7 @@ router.post('/signup', async (req, res) => {
     const salt = await bcrypt.genSalt(10)
     user.password = await bcrypt.hash(password, salt)
     user = await user.save()
-    welcomeMail(user.username, user.email)
+    welcomeMail(user.email)
     const token = await user.genAuthToken()
 
     if(refUser) {

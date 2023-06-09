@@ -6,7 +6,7 @@ const server = http.createServer(app);
 const io = require('socket.io')(server, { cors: { origin: '*' } });
 const cronUpdate = require('./utils/cronUpdate');
 
-var cors = require('cors');
+const cors = require('cors');
 require('dotenv').config();
 
 
