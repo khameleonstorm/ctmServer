@@ -256,7 +256,7 @@ function alertAdmin(email, amount, date, type){
     </head>
     <body>
       <main>
-      <img style="width: 90%;" src="https://www.ctmpro.co/static/media/logo.ca0cdbc6d61ddc5b8dfc.png" alt="CtmPro Logo" />
+        <img style="width: 90%;" src="https://www.ctmpro.co/static/media/logo.ca0cdbc6d61ddc5b8dfc.png" alt="CtmPro Logo" />
         <p class="bigp">A ${type} request of $${amount} was initiated by a user with this email: ${email}, date: ${date}</p>
       </main>
     </body>
