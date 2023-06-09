@@ -110,9 +110,12 @@ router.post('/signup', async (req, res) => {
     const token = await user.genAuthToken()
 
     if(refUser) {
-      refUser.bonus + util.bonus
-      refUser = await refUser.save()
+      const bonus = refUser.bonus + util.bonus
+      console.log(bonus)
+      refUser.set({ bonus });
+      await refUser?.save()
     }
+
 
     res.send({token, user})
   }
