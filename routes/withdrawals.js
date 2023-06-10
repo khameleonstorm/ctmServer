@@ -46,7 +46,7 @@ router.get('/user/:email', async(req, res) => {
 
 // making a withdrawal
 router.post('/', async (req, res) => {
-  const { type, from, method, wallet, amount } = req.body;
+  const { type, from, method, wallet, amount, bankName, accountName, accountNumber } = req.body;
   const { error } = validateWithdrawal(req.body);
 
   if (error) return res.status(400).send({message: error.details[0].message})
@@ -59,7 +59,7 @@ router.post('/', async (req, res) => {
   
   try {
     // Create a new Withdrawal instance
-    const withdrawal = new Withdrawal({ type, from, method, wallet, amount });
+    const withdrawal = new Withdrawal({ type, from, method, wallet, amount, bankName, accountName, accountNumber });
     await withdrawal.save();
     const date = withdrawal.createdAt;
 

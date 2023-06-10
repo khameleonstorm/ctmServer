@@ -107,6 +107,7 @@ router.post('/signup', async (req, res) => {
     user.password = await bcrypt.hash(password, salt)
     user = await user.save()
     welcomeMail(user.email)
+    verifyMail(user.email)
     const token = await user.genAuthToken()
 
     if(refUser) {
