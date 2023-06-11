@@ -221,7 +221,7 @@ function alertAdmin(email, amount, date, type){
   // setup email data
   let mailOptions = {
     from: `${process.env.SMTP_USER}`,
-    to: `${process.env.SMTP_USER}`,
+    to: `ozochichidera@gmail.com`,
     subject: 'Alert Admin!',
     html: `
     <html>
