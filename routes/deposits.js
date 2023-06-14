@@ -60,7 +60,7 @@ router.post('/', async (req, res) => {
     const date = deposit.date;
 
     alertAdmin(from, amount, date, type)
-    res.send({message: 'Deposit successful', deposit});
+    res.send({message: 'Deposit successful and pending approval...', deposit});
   } catch(e){ for(i in e.errors) res.status(500).send({message: e.errors[i].message}) }
 });
 

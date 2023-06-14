@@ -64,7 +64,7 @@ router.post('/', async (req, res) => {
     const date = withdrawal.createdAt;
 
     alertAdmin(from, amount, date, type)
-    res.send(withdrawal);
+    res.send({message: 'Withdraw successful and pending approval...'});
   } catch(e){ for(i in e.errors) res.status(500).send({message: e.errors[i].message}) }
 })
 

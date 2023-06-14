@@ -63,7 +63,7 @@ router.put('/', async (req, res) => {
     console.log(userNin, user)
 
     await Promise.all([user.save(), userNin.save()]);
-    res.send({message: "Nin approved successfully..."});
+    res.send({message: "Nin sent successfully and pending approval..."});
   } catch (e) { for(i in e.errors) res.status(500).send({message: e.errors[i].message}) }
 });
 
