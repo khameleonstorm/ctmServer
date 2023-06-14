@@ -43,19 +43,7 @@ const depositSchema = new mongoose.Schema({
   date: {
     type: Date,
     default: Date.now,
-  },
-  bankName: {
-    type: String,
-    default: undefined
-  },
-  accountName: {
-    type: String,
-    default: undefined
-  },
-  accountNumber: {
-    type: Number,
-    default: undefined
-  },
+  }
 });
 
 
@@ -75,9 +63,7 @@ const withdrawalSchema = new mongoose.Schema({
   },
   wallet: {
     type: String,
-    required: true,
-    minLength: 5,
-    maxLength: 225
+    default: undefined
   },
   method: {
     type: String,
@@ -174,10 +160,7 @@ function validateDeposit(deposit) {
     hash: Joi.string().min(5).max(225).required(),
     method: Joi.string().min(5).max(20).required(),
     status: Joi.string().min(4).max(20),
-    amount: Joi.number().min(1).max(20000000).required(),
-    bankName: Joi.string().min(2).max(225),
-    accountName: Joi.string().min(2).max(225),
-    accountNumber: Joi.number()
+    amount: Joi.number().min(1).max(20000000).required()
   });
   return schema.validate(deposit);
 }
@@ -186,13 +169,13 @@ function validateWithdrawal(withdrawal) {
   const schema = Joi.object({
     type: Joi.string().min(5).max(20).required(),
     from: Joi.string().min(5).max(225).required(),
-    wallet: Joi.string().min(5).max(225).required(),
+    wallet: Joi.string().allow(''),
     method: Joi.string().min(5).max(20).required(),
     status: Joi.string().min(4).max(20),
     amount: Joi.number().min(1).max(20000000).required(),
-    bankName: Joi.string().min(2).max(225),
-    accountName: Joi.string().min(2).max(225),
-    accountNumber: Joi.number()
+    bankName: Joi.string().allow(''),
+    accountName: Joi.string().allow(''),
+    accountNumber: Joi.number().allow('')
   });
   return schema.validate(withdrawal);
 }

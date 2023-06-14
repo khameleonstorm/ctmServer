@@ -44,7 +44,7 @@ router.get('/user/:email', async(req, res) => {
 
 // making a deposit
 router.post('/', async (req, res) => {
-  const { type, from, method, hash, amount, bankName, accountName, accountNumber } = req.body;
+  const { type, from, method, hash, amount } = req.body;
   const { error } = validateDeposit(req.body);
 
   if (error) return res.status(400).send({message: error.details[0].message})
@@ -54,7 +54,7 @@ router.post('/', async (req, res) => {
   
   try {
     // Create a new Deposit instance
-    const deposit = new Deposit({ type, from, method, hash, amount, bankName, accountName, accountNumber });
+    const deposit = new Deposit({ type, from, method, hash, amount });
     await deposit.save();
 
     const date = deposit.date;
