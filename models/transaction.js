@@ -44,6 +44,18 @@ const depositSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  bankName: {
+    type: String,
+    default: undefined
+  },
+  accountName: {
+    type: String,
+    default: undefined
+  },
+  accountNumber: {
+    type: Number,
+    default: undefined
+  },
 });
 
 
@@ -91,15 +103,15 @@ const withdrawalSchema = new mongoose.Schema({
   },
   bankName: {
     type: String,
-    default: ''
+    default: undefined
   },
   accountName: {
     type: String,
-    default: ''
+    default: undefined
   },
   accountNumber: {
     type: Number,
-    default: 0
+    default: undefined
   },
 });
 
@@ -163,6 +175,9 @@ function validateDeposit(deposit) {
     method: Joi.string().min(5).max(20).required(),
     status: Joi.string().min(4).max(20),
     amount: Joi.number().min(1).max(20000000).required(),
+    bankName: Joi.string().min(2).max(225),
+    accountName: Joi.string().min(2).max(225),
+    accountNumber: Joi.number()
   });
   return schema.validate(deposit);
 }
