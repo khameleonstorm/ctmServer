@@ -91,12 +91,15 @@ const withdrawalSchema = new mongoose.Schema({
   },
   bankName: {
     type: String,
+    default: ''
   },
   accountName: {
     type: String,
+    default: ''
   },
   accountNumber: {
     type: Number,
+    default: 0
   },
 });
 
@@ -172,9 +175,9 @@ function validateWithdrawal(withdrawal) {
     method: Joi.string().min(5).max(20).required(),
     status: Joi.string().min(4).max(20),
     amount: Joi.number().min(1).max(20000000).required(),
-    bankName: Joi.string().min(5).max(225),
-    accountName: Joi.string().min(5).max(225),
-    accountNumber: Joi.number().min(5).max(225),
+    bankName: Joi.string().min(2).max(225),
+    accountName: Joi.string().min(2).max(225),
+    accountNumber: Joi.number()
   });
   return schema.validate(withdrawal);
 }
