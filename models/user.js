@@ -90,7 +90,7 @@ const  validateUser = (user) => {
   const schema = {
     fullName: Joi.string().min(3).max(20).required(),
     username: Joi.string().min(3).max(20).required(),
-    email: Joi.string().min(5).max(225).email().required(),
+    email: Joi.string().min(5).max(225).required(),
     country: Joi.string().min(2).max(20).required(),
     password: Joi.string().min(5).max(20).required(),
     phone: Joi.string().min(0).max(15).allow(''),
