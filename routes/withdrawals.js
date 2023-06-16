@@ -72,9 +72,6 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
   const { from, amount, status } = req.body;
-  const { error } = validateWithdrawal(req.body);
-
-  if (error) return res.status(400).send({message: error.details[0].message})
 
   const withdrawal = await Withdrawal.findById(id);
   if (!withdrawal) return res.status(404).send({message: 'Withdrawal not found'})
@@ -83,6 +80,7 @@ router.put('/:id', async (req, res) => {
   if (!user) return res.status(404).send({message: 'User not found'})
 
   if (user.balance < amount) return res.status(400).send({message: 'Insufficient balance'})
+  if (withdrawal.status === 'successful') return res.status(400).send({message: 'Already Approved'})
   
   try {
     user.balance -= amount;
