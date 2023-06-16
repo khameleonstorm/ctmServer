@@ -96,7 +96,7 @@ const withdrawalSchema = new mongoose.Schema({
     default: undefined
   },
   accountNumber: {
-    type: Number,
+    type: String,
     default: undefined
   },
 });
