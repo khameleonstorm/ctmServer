@@ -175,7 +175,7 @@ function validateWithdrawal(withdrawal) {
     amount: Joi.number().min(1).max(20000000).required(),
     bankName: Joi.string().allow(''),
     accountName: Joi.string().allow(''),
-    accountNumber: Joi.number().allow('')
+    accountNumber: Joi.string().allow('')
   });
   return schema.validate(withdrawal);
 }
