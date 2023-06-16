@@ -118,7 +118,7 @@ router.post('/toUser', async (req, res) => {
     const newBalance = Number(userFrom.balance) - Number(amount)
     const newReceiverBalance = Number(userTo.balance) + Number(amount)
     userFrom.balance = newBalance;
-    userTo.balance += newReceiverBalance;
+    userTo.balance = newReceiverBalance;
 
     const transfer = new Transfer({ type, from, to, amount, status, method });
     await Promise.all([userFrom.save(), userTo.save(), transfer.save()]);
