@@ -105,4 +105,28 @@ router.delete('/:id', async (req, res) => {
 })
 
 
+
+//Count user Active Trades
+router.get('/count/:email', async(req, res) => {
+  const { email } = req.params
+  if(!email) return res.status(400).send({message: "Email is required..."})
+
+  try {
+    const trades = await Trade.find({ email, status: "Active" })
+    res.send({count: trades.length})
+  } catch (x) { return res.status(500).send({message: "Something Went Wrong..."}) }
+})
+
+// Count all user Completed Trades
+router.get('/count/completed/:email', async(req, res) => {
+  const { email } = req.params
+  if(!email) return res.status(400).send({message: "Email is required..."})
+
+  try {
+    const trades = await Trade.find({ email, status: "completed" })
+    res.send({count: trades.length})
+  } catch (x) { return res.status(500).send({message: "Something Went Wrong..."}) }
+})
+
+
 module.exports = router

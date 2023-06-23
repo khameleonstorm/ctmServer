@@ -156,4 +156,19 @@ router.post('/new-password', async(req, res) => {
 })
 
 
+
+
+//Count Referrals
+router.get('/count-referrals/:username', async(req, res) => {
+  const { username } = req.params
+  if(!username) return res.status(400).send({message: "username is required"})
+
+  try {
+    const users = await User.find({ referredBy: username })
+    if(!users) return res.status(400).send({message: "user not found"})
+    res.send({count: users.length})
+  } catch (x) { return res.status(500).send({message: "Something Went Wrong..."}) }
+})
+
+
 module.exports = router
