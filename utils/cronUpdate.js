@@ -8,7 +8,7 @@ const runCronJob = (io) => {
     try {
       // Find pending trades
       const pendingTrades = await Trade.find({ status: 'pending' });
-      console.log('Pending trades:', pendingTrades)
+      console.log('Pending trades:', pendingTrades);
 
       const updatePromises = [];
 
@@ -26,7 +26,30 @@ const runCronJob = (io) => {
 
           // Update the user's trade balance by adding the spread and the amount
           const tradeAmount = trade.spread + trade.amount;
-          user.trade +=  tradeAmount;
+          user.trade += tradeAmount;
+
+
+          // get all users and interate through them
+          const users = await User.find();
+
+          for (const user of users) {
+            // Get the user's trade history
+            const tradeHistory = await Trade.find({ email: user.email, status: 'completed' });
+
+            // Calculate the total trade amount from the trade history
+            const totalTradeAmount = tradeHistory.reduce((total, trade) => total + (trade.spread + trade.amount), 0);
+
+            // Check if the total trade amount is greater than or equal to 100 and 
+            // the user has a bonus then add the bonus to the user's balance
+            if (totalTradeAmount >= 100) {
+              if (user.bonus !== 0) {
+                const bal = Number(user.balance) + Number(user.bonus);
+                user.balance = bal;
+                user.bonus = 0;
+              }
+            }
+
+          }
 
           // Push the updated user and trade to the update promises array
           updatePromises.push(user.save());
@@ -46,6 +69,7 @@ const runCronJob = (io) => {
     }
   });
 };
+
 
 // Export the function to run the cron job
 module.exports = runCronJob;
