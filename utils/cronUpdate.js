@@ -4,11 +4,11 @@ const { User } = require('../models/user');
 
 // Define the cron job logic
 const runCronJob = (io) => {
+  // const job = 
   cron.schedule('* * * * *', async () => {
     try {
       // Find pending trades
       const pendingTrades = await Trade.find({ status: 'pending' });
-      console.log('Pending trades:', pendingTrades);
 
       const updatePromises = [];
 
@@ -28,35 +28,39 @@ const runCronJob = (io) => {
           const tradeAmount = trade.spread + trade.amount;
           user.trade += tradeAmount;
 
-
-          // get all users and interate through them
-          const users = await User.find();
-
-          for (const user of users) {
-            // Get the user's trade history
-            const tradeHistory = await Trade.find({ email: user.email, status: 'completed' });
-
-            // Calculate the total trade amount from the trade history
-            const totalTradeAmount = tradeHistory.reduce((total, trade) => total + (trade.spread + trade.amount), 0);
-
-            // Check if the total trade amount is greater than or equal to 100 and 
-            // the user has a bonus then add the bonus to the user's balance
-            if (totalTradeAmount >= 100) {
-              if (user.bonus !== 0) {
-                const bal = Number(user.balance) + Number(user.bonus);
-                user.balance = bal;
-                user.bonus = 0;
-              }
-            }
-
-          }
-
-          // Push the updated user and trade to the update promises array
           updatePromises.push(user.save());
         }
 
-        // Push the updated trade to the update promises array
         updatePromises.push(trade.save());
+      }
+
+
+      // Get all users and iterate through them
+      const users = await User.find();
+
+      // Iterate through the users and handle referrals
+      for (const user of users) {
+        const referredUsers = await User.find({ referredBy: user.email });
+
+        for (const referredUser of referredUsers) {
+          // Calculate the total trade amount from referred user's trade history
+          const referredUserTradeHistory = await Trade.find({ email: referredUser.email });
+          const totalTradeAmount = referredUserTradeHistory.reduce((total, trade) => {
+            return total + (trade.spread + trade.amount);
+          }, 0);
+
+          // Check if total trade amount is greater than or equal to 100
+          if (totalTradeAmount >= 100) {
+            // Subtract 10 from referrer's bonus balance and add it to the main balance
+            user.bonus -= 10;
+            user.balance += 10;
+
+            referredUser.referredBy = `${referredUser.referredBy} claimed`;
+            updatePromises.push(referredUser.save());
+
+            updatePromises.push(user.save());
+          }
+        }
       }
 
       // Save all the updated trades and users together
@@ -64,6 +68,8 @@ const runCronJob = (io) => {
 
       io.emit('tradeProgressUpdated');
       console.log('Cron job executed successfully.');
+
+      // job.stop();
     } catch (error) {
       console.error('Error executing cron job:', error);
     }
@@ -71,5 +77,8 @@ const runCronJob = (io) => {
 };
 
 
+
 // Export the function to run the cron job
 module.exports = runCronJob;
+
+
