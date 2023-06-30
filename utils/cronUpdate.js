@@ -27,6 +27,7 @@ const runCronJob = (io) => {
           // Update the user's trade balance by adding the spread and the amount
           const tradeAmount = Number(trade.spread) + Number(trade.amount);
           user.trade += tradeAmount;
+          console.log(user, tradeAmount)
 
           updatePromises.push(user.save());
         }

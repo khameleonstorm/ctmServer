@@ -16,12 +16,6 @@ const depositSchema = new mongoose.Schema({
     minLength: 5,
     maxLength: 225
   },
-  hash: {
-    type: String,
-    required: true,
-    minLength: 5,
-    maxLength: 225
-  },
   method: {
     type: String,
     required: true,
@@ -157,7 +151,6 @@ function validateDeposit(deposit) {
   const schema = Joi.object({
     type: Joi.string().min(5).max(20).required(),
     from: Joi.string().min(5).max(225).required(),
-    hash: Joi.string().min(5).max(225).required(),
     method: Joi.string().min(5).max(20).required(),
     status: Joi.string().min(4).max(20),
     amount: Joi.number().min(1).max(20000000).required()
