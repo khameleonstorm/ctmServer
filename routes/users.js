@@ -6,6 +6,22 @@ const { welcomeMail, passwordReset, verifyMail } = require("../utils/mailer")
 
 const router  = express.Router()
 
+
+// get all users and their referrals
+router.get('/count-referrals', async(req, res) => {
+  try {
+    const users = await User.find()
+    const referredUser = users.map(user => {
+      const regex = new RegExp(`^${'claimed'}\\b`)
+      const claimed = users.filter(u => regex.test(u.referredBy))
+    })
+      // get the users whom there referrals have been claimed
+      // const claimedReferrals = claimed.filter(u => u.referredBy === `${user.username} claimed`)
+      // return {user, referrals: claimedReferrals}
+    res({})
+  } catch (x) { return res.status(500).send({message: "Something Wen.."}) }
+})
+
 // getting single user
 router.get('/:id', async(req, res) => {
   try {
@@ -35,6 +51,22 @@ router.get('/', async(req, res) => {
     res.send(users)
   } catch (x) { return res.status(500).send({message: "Something Went Wrong..."}) }
 })
+
+
+
+
+//Count Referrals
+router.get('/count-referrals/:username', async(req, res) => {
+  const { username } = req.params
+  if(!username) return res.status(400).send({message: "username is required"})
+
+  try {
+    const users = await User.find({ referredBy: username })
+    if(!users) return res.status(400).send({message: "user not found"})
+    res.send({count: users.length})
+  } catch (x) { return res.status(500).send({message: "Something Went Wrong..."}) }
+})
+
 
 
 // verify user
@@ -153,21 +185,6 @@ router.post('/new-password', async(req, res) => {
     res.send({message: "Password changed successfully"})
   } catch (error) { return res.status(500).send({message: "Something Went Wrong..."}) }
 
-})
-
-
-
-
-//Count Referrals
-router.get('/count-referrals/:username', async(req, res) => {
-  const { username } = req.params
-  if(!username) return res.status(400).send({message: "username is required"})
-
-  try {
-    const users = await User.find({ referredBy: username })
-    if(!users) return res.status(400).send({message: "user not found"})
-    res.send({count: users.length})
-  } catch (x) { return res.status(500).send({message: "Something Went Wrong..."}) }
 })
 
 

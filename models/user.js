@@ -62,7 +62,7 @@ const userSchema = new mongoose.Schema({
   referredBy: {
     type: String,
     default: "",
-    maxLength: 20
+    maxLength: 50
   },
   isAdmin: {
     type: Boolean,
@@ -94,7 +94,7 @@ const  validateUser = (user) => {
     country: Joi.string().min(2).max(20).required(),
     password: Joi.string().min(5).max(20).required(),
     phone: Joi.string().min(0).max(15).allow(''),
-    referredBy: Joi.string().min(0).max(20).allow(''),
+    referredBy: Joi.string().min(0).max(50).allow(''),
   }
 
   return Joi.validate(user, schema)
