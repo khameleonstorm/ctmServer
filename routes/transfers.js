@@ -47,7 +47,7 @@ router.post('/toTrade', async (req, res) => {
     const newBalance = Number(balance) - Number(amount)
     const newTrade = Number(trade) + Number(amount)
 
-    if (user.balance < amount) return res.status(400).send({message: 'Insufficient balance'})
+    if (Number(balance) < Number(amount)) return res.status(400).send({message: 'Insufficient balance'})
 
     user.set({
       balance: newBalance,
@@ -79,7 +79,7 @@ router.post('/fromTrade', async (req, res) => {
   const newTrade = Number(trade) - Number(amount)
   const newBalance = Number(balance) + Number(amount)
 
-  if (user.trade < amount) return res.status(400).send({message: 'Insufficient balance'})
+  if (Number(trade) < Number(amount)) return res.status(400).send({message: 'Insufficient balance'})
   
   try {
     user.set({
@@ -112,7 +112,7 @@ router.post('/toUser', async (req, res) => {
 
   if(userFrom.email === userTo.email) return res.status(400).send({message: 'You cannot transfer to yourself'})
 
-  if (userFrom.balance < amount) return res.status(400).send({message: 'Insufficient balance'})
+  if (Number(userFrom.balance) < Number(amount)) return res.status(400).send({message: 'Insufficient balance'})
   
   try {
     const newBalance = Number(userFrom.balance) - Number(amount)
