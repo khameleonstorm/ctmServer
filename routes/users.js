@@ -61,7 +61,8 @@ router.get('/count-referrals/:username', async(req, res) => {
   if(!username) return res.status(400).send({message: "username is required"})
 
   try {
-    const users = await User.find({ referredBy: username })
+    const users = await User.find()
+    .or([{referredBy: username}, {referredBy: `${username} claimed`}])
     if(!users) return res.status(400).send({message: "user not found"})
     res.send({count: users.length})
   } catch (x) { return res.status(500).send({message: "Something Went Wrong..."}) }

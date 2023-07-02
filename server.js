@@ -5,6 +5,7 @@ const http = require('http');
 const server = http.createServer(app);
 const io = require('socket.io')(server, { cors: { origin: '*' } });
 const cronUpdate = require('./utils/cronUpdate');
+const refs = require('./utils/refs');
 
 const cors = require('cors');
 require('dotenv').config();
@@ -32,6 +33,7 @@ io.on('connection', (socket) => {
 
 // running cron job
 cronUpdate(io);
+refs(io)
 
 // CORS middleware
 app.use((req, res, next) => {

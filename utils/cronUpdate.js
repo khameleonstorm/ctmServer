@@ -17,17 +17,23 @@ const runCronJob = (io) => {
         // Increment progress by 1
         trade.progress += 1;
 
-        // If progress reaches 1440, update status to completed
-        if (trade.progress >= 1440) {
+        // If progress reaches 1440 or trade more than 24 hours, update status to completed
+        // calculate the difference between the startDate and the endDate, the date string looks something like this '2023-05-17T18:38:05.384+00:00'
+
+        const startDate = new Date(trade.startDate);
+        const endDate = new Date(trade.endDate);
+        const difference = endDate - startDate;
+        const hours = difference / 1000 / 60 / 60;
+
+        if (trade.progress >= 1440 || hours >= 24) {
           trade.status = 'completed';
 
           // Find the user who placed the trade
           const user = await User.findOne({ email: trade.email });
 
           // Update the user's trade balance by adding the spread and the amount
-          const tradeAmount = Number(trade.spread) + Number(trade.amount);
+          const tradeAmount = Number(trade.spread) + Number(trade.amount)
           user.trade += tradeAmount;
-          console.log(user, tradeAmount)
 
           updatePromises.push(user.save());
         }
@@ -52,37 +58,3 @@ const runCronJob = (io) => {
 
 // Export the function to run the cron job
 module.exports = runCronJob;
-
-
-
-
-
-      // // Get all users and iterate through them
-      // const users = await User.find();
-
-      // // Iterate through the users and handle referrals
-      // for (const user of users) {
-      //   const referredUsers = await User.find({ referredBy: user.username });
-
-      //   for (const referredUser of referredUsers) {
-      //     // Calculate the total trade amount from referred user's trade history
-      //     const referredUserTradeHistory = await Trade.find({ email: referredUser.email });
-      //     const totalTradeAmount = referredUserTradeHistory.reduce((total, trade) => {
-      //       return total + (trade.spread + trade.amount);
-      //     }, 0);
-
-      //     // Check if total trade amount is greater than or equal to 100
-      //     if (totalTradeAmount >= 100) {
-      //       // Subtract 10 from referrer's bonus balance and add it to the main balance
-      //       user.bonus -= 10;
-      //       user.balance += 10;
-
-      //       referredUser.referredBy = `${referredUser.referredBy} claimed`;
-      //       updatePromises.push(referredUser.save());
-
-      //       updatePromises.push(user.save());
-      //     }
-
-      //     console.log(user, referredUsers, totalTradeAmount)
-      //   }
-      // }
