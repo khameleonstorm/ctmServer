@@ -11,7 +11,7 @@ const runCronJob = (io) => {
       const users = await User.find();
 
       const updatePromises = [];
-      
+
       // Iterate through the users and handle referrals
       for (const user of users) {
         const referredUsers = await User.find({ referredBy: user.username });
@@ -34,8 +34,6 @@ const runCronJob = (io) => {
 
             updatePromises.push(user.save());
           }
-
-          console.log(user, referredUsers, totalTradeAmount)
         }
       }
 

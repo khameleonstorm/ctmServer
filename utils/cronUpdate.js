@@ -18,14 +18,7 @@ const runCronJob = (io) => {
         trade.progress += 1;
 
         // If progress reaches 1440 or trade more than 24 hours, update status to completed
-        // calculate the difference between the startDate and the endDate, the date string looks something like this '2023-05-17T18:38:05.384+00:00'
-
-        const startDate = new Date(trade.startDate);
-        const endDate = new Date(trade.endDate);
-        const difference = endDate - startDate;
-        const hours = difference / 1000 / 60 / 60;
-
-        if (trade.progress >= 1440 || hours >= 24) {
+        if (trade.progress >= 1440) {
           trade.status = 'completed';
 
           // Find the user who placed the trade
@@ -45,7 +38,7 @@ const runCronJob = (io) => {
       await Promise.all(updatePromises);
 
       io.emit('tradeProgressUpdated');
-      console.log('Cron job executed successfully.');
+      console.log('Cron job executed.');
 
       // job.stop();
     } catch (error) {
