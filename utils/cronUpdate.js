@@ -25,8 +25,8 @@ const runCronJob = (io) => {
           const user = await User.findOne({ email: trade.email });
 
           // Update the user's trade balance by adding the spread and the amount
-          const tradeAmount = Number(trade.spread) + Number(trade.amount)
-          user.trade += tradeAmount;
+          const tradeAmount = trade.spread + trade.amount + user.trade
+          user.trade = tradeAmount;
 
           updatePromises.push(user.save());
         }
