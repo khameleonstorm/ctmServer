@@ -5,7 +5,7 @@ const { User } = require('../models/user');
 // Define the cron job logic
 const runCronJob = (io) => {
   // const job = 
-  cron.schedule('* * * * *', async () => {
+  cron.schedule('0 * * * *', async () => {
     try {
       // Get all users and iterate through them
       const users = await User.find();
