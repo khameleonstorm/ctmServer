@@ -7,7 +7,7 @@ const router  = express.Router()
 // getting all nins
 router.get('/', async(req, res) => {
   try {
-    const nins = await Nin.find()
+    const nins = await Nin.find().sort({ _id: -1 });
     res.send(nins)
   } catch (x) { return res.status(500).send({message: "Something Went Wrong..."}) }
 })

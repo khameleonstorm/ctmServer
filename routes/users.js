@@ -2,25 +2,9 @@ const bcrypt = require('bcrypt')
 const express = require('express')
 const { User, validateUser, validateLogin } = require("../models/user")
 const { Util } = require("../models/util")
-const { welcomeMail, passwordReset, verifyMail } = require("../utils/mailer")
+const { passwordReset, verifyMail } = require("../utils/mailer")
 
 const router  = express.Router()
-
-
-// get all users and their referrals
-router.get('/count-referrals', async(req, res) => {
-  try {
-    const users = await User.find()
-    const referredUser = users.map(user => {
-      const regex = new RegExp(`^${'claimed'}\\b`)
-      const claimed = users.filter(u => regex.test(u.referredBy))
-    })
-      // get the users whom there referrals have been claimed
-      // const claimedReferrals = claimed.filter(u => u.referredBy === `${user.username} claimed`)
-      // return {user, referrals: claimedReferrals}
-    res({})
-  } catch (x) { return res.status(500).send({message: "Something Wen.."}) }
-})
 
 // getting single user
 router.get('/:id', async(req, res) => {
@@ -139,7 +123,6 @@ router.post('/signup', async (req, res) => {
     const salt = await bcrypt.genSalt(10)
     user.password = await bcrypt.hash(password, salt)
     user = await user.save()
-    welcomeMail(user.email)
     verifyMail(user.email)
     const token = await user.genAuthToken()
 
