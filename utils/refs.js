@@ -9,13 +9,6 @@ const runCronJob = (io) => {
     try {
       // Get all users and iterate through them
       const users = await User.find();
-      const completedTrades = await Trade.find({ status: 'completed' })
-
-      // set all trade progress to 24
-      for (const trade of completedTrades) {
-        trade.progress = 24;
-        await trade.save();
-      }
 
       const updatePromises = [];
 
