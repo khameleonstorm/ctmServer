@@ -1,7 +1,7 @@
 const express = require('express')
 const { Withdrawal, validateWithdrawal } = require("../models/transaction")
 const { User } = require("../models/user")
-const { alertAdmin } = require("../utils/mailer")
+const { alertAdmin, withdrawalMail } = require("../utils/mailer")
 
 
 const router  = express.Router()
@@ -88,6 +88,7 @@ router.put('/:id', async (req, res) => {
     withdrawal.status = status;
 
     await Promise.all([user.save(), withdrawal.save()]);
+    withdrawalMail(fullName, amount, date, email)
     res.send({message: 'Withdrawal updated successfully...'});
   } catch(e){ for(i in e.errors) res.status(500).send({message: e.errors[i].message}) }
 });

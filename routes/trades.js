@@ -48,6 +48,9 @@ router.post('/', async (req, res) => {
   const user = await User.findOne({ email });
   if (!user) return res.status(404).send({message: 'User not found'});
 
+  const userPendingTrades = await Trade.find({ email, status: 'pending' });
+  if (userPendingTrades.length >= 2) return res.status(400).send({message: 'You have reached your maximum trade limit'});
+
   if (user.trade < amount) return res.status(400).send({message: 'Insufficient funds'});
 
   user.trade -= amount;
@@ -60,6 +63,7 @@ router.post('/', async (req, res) => {
   try {
     const trade = new Trade({ email, amount, spread });
     await Promise.all([user.save(), trade.save()]);
+    console.log(spread, trade)
 
     req.app.io.emit('change');
     req.app.io.emit('tradeProgressUpdated');

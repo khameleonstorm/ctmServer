@@ -1,7 +1,7 @@
 const express = require('express')
 const { Deposit, validateDeposit } = require("../models/transaction")
 const { User } = require("../models/user")
-const { alertAdmin } = require("../utils/mailer")
+const { alertAdmin, depositMail } = require("../utils/mailer")
 
 const router  = express.Router()
 
@@ -88,7 +88,10 @@ router.put('/:id', async (req, res) => {
     console.log(amount, updatedUser.balance)
 
     if (!updatedDeposit || !updatedUser) throw new Error('Failed to update deposit and user')
+    const { fullName, email } = updatedUser;
+    const { date } = updatedDeposit;
 
+    depositMail(fullName, amount, date, email)
     res.send(updatedDeposit);
   } catch(e){ for(i in e.errors) res.status(500).send({message: e.errors[i].message}) }
 });
