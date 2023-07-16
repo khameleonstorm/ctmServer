@@ -25,6 +25,30 @@ router.get('/:id', async(req, res) => {
 });
 
 
+router.get('/pending-trades', async (req, res) => {
+  try {
+    const trades = await Trade.find({ status: 'pending' });
+
+    const updatedTrades = trades.map(async (trade) => {
+      const progressInHours = Math.ceil(trade.progress / 60);
+
+      trade.progress = progressInHours;
+
+      // Save the updated trade back to the database
+      const newTrade = await trade.save();
+      return newTrade;
+    });
+
+    await Promise.all(updatedTrades);
+
+    res.status(200).send(updatedTrades);
+  } catch (error) {
+    res.status(500).send({ message: 'Internal server error' });
+  }
+});
+
+
+
 // getting all trades of a user
 router.get('/user/:email', async(req, res) => {
   let trades = []

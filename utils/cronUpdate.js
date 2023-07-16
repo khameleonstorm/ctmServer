@@ -14,7 +14,7 @@ const runCronJob = (io) => {
         trade.progress += 1;
 
         // If progress reaches 24 hours Find n update user's trade balance
-        if (trade.progress = 24) {
+        if (trade.progress >= 24) {
           trade.status = 'completed';
           const tradeAmt = trade.amount + trade.spread;
           await User.findOneAndUpdate({ email: trade.email }, {$inc: {trade: tradeAmt}})
