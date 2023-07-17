@@ -348,7 +348,7 @@ function withdrawalMail(fullName, amount, date, email){
         <img style="width: 40%;" src="https://www.ctmpro.co/static/media/logo.ca0cdbc6d61ddc5b8dfc.png" alt="CtmPro Logo" />
         <p>Dear ${fullName}</p>
         <p>
-          Your withdrawal of <strong>${amount}</strong>, ${date}, was successful!
+          Your withdrawal of <strong>$${amount}</strong>, ${date}, was successful!
           Thank you for trading with CtmPro.
         </p>
       </main>
