@@ -86,6 +86,8 @@ router.put('/:id', async (req, res) => {
     user.balance -= amount;
     user.withdraw += amount;
     withdrawal.status = status;
+    const { fullName, email } = user;
+    const { date } = withdrawal;
 
     await Promise.all([user.save(), withdrawal.save()]);
     withdrawalMail(fullName, amount, date, email)
