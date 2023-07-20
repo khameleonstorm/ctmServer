@@ -44,7 +44,7 @@ const utilSchema = new mongoose.Schema({
   },
   bonus: {
     type: Number,
-    default: 1,
+    default: 0.5,
   },
 });
 
@@ -63,7 +63,7 @@ function validateUtil(util) {
     walletCoin: Joi.string().min(1).max(225),
     walletAddress: Joi.string().min(10).max(225),
     rate: Joi.number().min(0),
-    bonus: Joi.number().min(0),
+    bonus: Joi.number(),
   });
   return schema.validate(util);
 }

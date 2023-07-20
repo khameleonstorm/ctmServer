@@ -31,7 +31,7 @@ const depositSchema = new mongoose.Schema({
   amount: {
     type: Number,
     required: true,
-    minLength: 5,
+    minLength: 10,
     maxLength: 20000000
   },
   date: {
@@ -153,7 +153,7 @@ function validateDeposit(deposit) {
     from: Joi.string().min(5).max(225).required(),
     method: Joi.string().min(5).max(20).required(),
     status: Joi.string().min(4).max(20),
-    amount: Joi.number().min(5).max(20000000).required()
+    amount: Joi.number().min(10).max(20000000).required()
   });
   return schema.validate(deposit);
 }
