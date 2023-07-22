@@ -33,7 +33,7 @@ const runCronJob = (io) => {
 
 
           // Check if total trade amount is greater than or equal to 100
-          if (totalTradeAmount >= 100 && totalDepositAmount > 10 && !referredUser.referredBy.includes('claimed') && !referredUser.referredBy.includes('redeemed') && user.bonus >= 0.5) {
+          if (totalTradeAmount >= 10 && totalDepositAmount > 10 && !referredUser.referredBy.includes('claimed') && !referredUser.referredBy.includes('redeemed') && user.bonus >= 0.5) {
             // Subtract 10 from referrer's bonus balance and add it to the main balance
             user.bonus -= 0.5;
             user.balance += 0.5;
