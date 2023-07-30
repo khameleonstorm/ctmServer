@@ -28,11 +28,6 @@ router.get('/:id', async(req, res) => {
 router.get('/all-trades', async (req, res) => {
   try {
     const trades = await Trade.find();
-    // set all trade progress to 24
-    trades.forEach(trade => {
-      trade.progress = 24;
-      trade.save();
-    });
     res.status(200).send(trades);
   } catch (error) {
     res.status(500).send({ message: 'Internal server error' });
@@ -65,7 +60,7 @@ router.post('/', async (req, res) => {
   if (!user) return res.status(404).send({message: 'User not found'});
 
   const userPendingTrades = await Trade.find({ email, status: 'pending' });
-  if (userPendingTrades.length >= 2) return res.status(400).send({message: 'You have reached your maximum trade limit'});
+  if (userPendingTrades.length >= 1) return res.status(400).send({message: 'You have reached your maximum trade limit'});
 
   if (user.trade < amount) return res.status(400).send({message: 'Insufficient funds'});
 

@@ -117,23 +117,21 @@ router.post('/signup', async (req, res) => {
   let refUser = await User.findOne({ username: referredBy})
   const util = await Util.findOne()
 
-  user = new User({fullName, username, email, password, country, phone, referredBy: refUser?.username})
-
+  
   try{
+    user = new User({fullName, username, email, password, country, phone, referredBy: refUser?.username})
     const salt = await bcrypt.genSalt(10)
     user.password = await bcrypt.hash(password, salt)
+    const token = await user.genAuthToken()
+    
+    if(refUser) {
+      refUser.bonus += util.bonus
+      refUser = await refUser.save()
+    }
+    
+    
     user = await user.save()
     verifyMail(user.email)
-    const token = await user.genAuthToken()
-
-    if(refUser) {
-      const bonus = refUser.bonus + util.bonus
-      console.log(bonus)
-      refUser.set({ bonus });
-      await refUser?.save()
-    }
-
-
     res.send({token, user})
   }
   catch(e){ for(i in e.errors) res.status(500).send({message: e.errors[i].message}) }
