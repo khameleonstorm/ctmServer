@@ -2,8 +2,8 @@ const Joi = require("joi");
 const mongoose = require("mongoose");
 
 
-// Nin schema
-const ninSchema = new mongoose.Schema({
+// Kyc schema
+const kycSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -16,7 +16,7 @@ const ninSchema = new mongoose.Schema({
     minLength: 5,
     maxLength: 225
   },
-  nin: {
+  kyc: {
     type: String,
     required: true,
     minLength: 5,
@@ -30,22 +30,22 @@ const ninSchema = new mongoose.Schema({
 
 
 
-// nin model
-const Nin = mongoose.model("Nin", ninSchema);
+// kyc model
+const Kyc = mongoose.model("Kyc", kycSchema);
 
 
-// validate Nin
-function validateNin(nin) {
+// validate Kyc
+function validateKyc(kyc) {
   const schema = Joi.object({
     name: Joi.string().min(5).max(225).required(),
     email: Joi.string().min(5).max(225).required(),
-    nin: Joi.string().min(5).max(225).required(),
+    kyc: Joi.string().min(5).max(225).required(),
   });
 
-  return schema.validate(nin);
+  return schema.validate(kyc);
 }
 
 
 // exports
-exports.Nin = Nin;
-exports.validateNin = validateNin;
+exports.Kyc = Kyc;
+exports.validateKyc = validateKyc;

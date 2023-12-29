@@ -1,5 +1,5 @@
 const express = require('express')
-const { Trade, validateTrade } = require("../models/trade")
+const { Deposit } = require("../models/transaction")
 const { User } = require("../models/user")
 const { Util } = require("../models/util")
 
@@ -38,11 +38,9 @@ router.get('/all-trades', async (req, res) => {
 
 // getting all trades of a user
 router.get('/user/:email', async(req, res) => {
-  let trades = []
   const { email } = req.params
   try {
-    trades = await Trade.find({ email })
-    trades.sort((a, b) => b.startDate - a.startDate);
+    const trades = await Trade.find({ email, status: 'pending' })
     if (!trades) return res.status(404).send({message: "Trade not found..."})
     res.send(trades);
   } catch(e){ for(i in e.errors) res.status(500).send({message: e.errors[i].message}) }
@@ -53,17 +51,17 @@ router.get('/user/:email', async(req, res) => {
 router.post('/', async (req, res) => {
   const { email, amount } = req.body;
   const { error } = validateTrade(req.body);
-
   if (error) return res.status(400).send({message: error.details[0].message});
 
   const user = await User.findOne({ email });
   if (!user) return res.status(404).send({message: 'User not found'});
 
+  //get user pending trades
   const userPendingTrades = await Trade.find({ email, status: 'pending' });
   if (userPendingTrades.length >= 1) return res.status(400).send({message: 'You have reached your maximum trade limit'});
 
+  //check if user has enough funds
   if (user.trade < amount) return res.status(400).send({message: 'Insufficient funds'});
-
   user.trade -= amount;
 
   const { margin } = await Util.findById('647cd9ec3c6d2b0f516b962f');
@@ -72,10 +70,38 @@ router.post('/', async (req, res) => {
   const spread = amount * margin
   
   try {
-    const trade = new Trade({ email, amount, spread });
+    const trade = new Trade({ email, amount, spread, mainBal: user.balance, tradeBal: user.trade });
     await Promise.all([user.save(), trade.save()]);
-    console.log(spread, trade)
 
+      
+    //check if user has a referrer
+    if(user.referredBy !== "" && (!user.referredBy.includes("claimed") || !user.referredBy.includes("redeemed"))){
+      const referrer = await User.findOne({ username: user.referredBy });
+      if (!referrer) return res.status(404).send({message: 'Referrer not found'});
+
+      //get referrer pending trades
+      const allUserTrades = await Trade.find({ email });
+      const allUserApprovedDeposits = await Deposit.find({ from: email, status: 'successful' });
+
+      console.log(allUserTrades, allUserApprovedDeposits) 
+
+      let totalDeposits = 0;
+      let totalTrades = 0;
+
+      allUserApprovedDeposits.forEach(deposit => totalDeposits += deposit.amount);
+      allUserTrades.forEach(trade => totalTrades += trade.amount);
+
+      if(totalTrades >= 10 && totalDeposits >= 10){
+        referrer.bonus -= 0.5;
+        referrer.balance += 0.5;
+        user.referredBy = `${user.referredBy} redeemed`;
+
+        await user.save();
+        await referrer.save();
+      }
+    }
+
+    //emit socket and send response
     req.app.io.emit('change');
     req.app.io.emit('tradeProgressUpdated');
     res.status(200).send({ trade, margin, spread });
@@ -84,8 +110,7 @@ router.post('/', async (req, res) => {
 
 
 // updating a trade
-router.put('/:id', async (req, res) => {
-  const { email, amount, progress, status } = req.body;
+router.put('/claim/:id', async (req, res) => {
   const { id } = req.params;
   const { error } = validateTrade(req.body);
 
@@ -95,11 +120,11 @@ router.put('/:id', async (req, res) => {
   if (!trade) return res.status(404).send({message: 'Trade not found'});
 
   try {
-    trade.email = email;
-    trade.amount = amount;
-    trade.progress = progress;
-    trade.status = status;
-
+    if (trade.status === 'pending') {
+      trade.status = 'completed';
+      const tradeAmt = trade.amount + trade.spread;
+      await User.findOneAndUpdate({ email: trade.email }, {$inc: {trade: tradeAmt}})
+    }
     await trade.save();
     res.send(trade);
   } catch (error) { for (i in error.errors) res.status(500).send({message: error.errors[i].message}) }

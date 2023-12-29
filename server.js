@@ -4,8 +4,6 @@ const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const io = require('socket.io')(server, { cors: { origin: '*' } });
-const cronUpdate = require('./utils/cronUpdate');
-const refs = require('./utils/refs');
 
 const cors = require('cors');
 require('dotenv').config();
@@ -31,10 +29,6 @@ io.on('connection', (socket) => {
 });
 
 
-// running cron job
-cronUpdate(io);
-refs(io)
-
 // CORS middleware
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -57,7 +51,7 @@ app.use("/api/withdrawals", require('./routes/withdrawals'));
 app.use("/api/transfers", require('./routes/transfers'));
 app.use("/api/trades", require('./routes/trades'));
 app.use("/api/utils", require("./routes/utils"));
-app.use("/api/nins", require("./routes/nins"));
+app.use("/api/nins", require("./routes/kycs"));
 
 // listening to port
 const PORT = !process.env.PORT ? 5000 : process.env.PORT;

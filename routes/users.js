@@ -1,8 +1,8 @@
 const bcrypt = require('bcrypt')
 const express = require('express')
 const { User, validateUser, validateLogin } = require("../models/user")
-const { Util } = require("../models/util")
-const { passwordReset, verifyMail } = require("../utils/mailer")
+const { passwordReset, welcomeMail, otpMail } = require("../utils/mailer")
+const Otp = require('../models/otp')
 
 const router  = express.Router()
 
@@ -11,19 +11,7 @@ router.get('/:id', async(req, res) => {
   try {
     let user = await User.findById(req.params.id)
     if(!user) return res.status(400).send({message: "user not found"})
-    res.send(user)
-  } catch (x) { return res.status(500).send({message: "Something Went Wrong..."}) }
-})
-
-
-// get all users by referral
-router.get('/referral/:username', async(req, res) => {
-  const { username } = req.params
-
-  try {
-    const users = await User.find({ referredBy: username })
-    if(!users) return res.status(400).send({message: "user not found"})
-    res.send(users)
+    res.send({user})
   } catch (x) { return res.status(500).send({message: "Something Went Wrong..."}) }
 })
 
@@ -38,105 +26,101 @@ router.get('/', async(req, res) => {
 
 
 
-
-//Count Referrals
-router.get('/count-referrals/:username', async(req, res) => {
-  const { username } = req.params
-  if(!username) return res.status(400).send({message: "username is required"})
-
-  try {
-    const users = await User.find()
-    .or([{referredBy: username}, {referredBy: `${username} claimed`}])
-    if(!users) return res.status(400).send({message: "user not found"})
-    res.send({count: users.length})
-  } catch (x) { return res.status(500).send({message: "Something Went Wrong..."}) }
-})
-
-
-
 // verify user
-router.post('/verify', async(req, res) => {
+router.post('/mfa', async(req, res) => {
   const { email } = req.body
 
   try {
     let user = await User.findOne({ email })
     if(!user) return res.status(400).send({message: "user not found"})
     
-    user.isVerified = true
+    user.mfa = true
     user = await user.save()
   
     res.send({message: "User verified successfully"})
   } catch (error) { return res.status(500).send({message: "Something Went Wrong..."}) }
 })
 
-// Resend verification email
-router.post('/resend-email', async(req, res) => {
-  const { email } = req.body
-
-  try {
-    let user = await User.findOne({ email })
-    if(!user) return res.status(400).send({message: "user not found"})
-    if(user.isVerified) return res.status(400).send({message: "User already verified"})
-    verifyMail(user.email)
-  
-    res.send({message: "Email sent successfully"})
-  } catch (error) { return res.status(500).send({message: "Something Went Wrong..."}) }
-})
-
 
 // login user
 router.post('/login', async(req, res) => {
-  const { email, password } = req.body
+  const { email } = req.body
   const { error } = validateLogin(req.body)
   if(error) return res.status(400).send({message: error.details[0].message})
 
+  let user = await User.findOne({ email })
+  if(!user) return res.status(400).send({message: "user not found"})
+
   try {
-    let user = await User.findOne({ email })
-    if(!user) return res.status(400).send({message: "Invalid email"})
-  
-    const validatePassword = await bcrypt.compare(password, user.password)
-    if(!validatePassword) return res.status(400).send({message: "Invalid password"})
-  
-    const token = await user.genAuthToken()
-    res.send({token, user})
+    const otp = await new Otp({email}).save()
+
+    otpMail(email, otp.code)
+    res.send({message: 'success'})
   } catch (error) { for(i in e.errors) res.status(500).send({message: e.errors[i].message}) }
 })
 
 
 
 
-//create a new user
+//sign up
 router.post('/signup', async (req, res) => {
-  const {fullName, username, email, country, phone, password, referredBy} = req.body
+  const {username, email} = req.body
   const { error } = validateUser(req.body)
   if(error) return res.status(400).send({message: error.details[0].message})
 
   let user = await User.findOne({ $or: [{email}, {username}] })
-  if(user) return res.status(400).send({message: "username or email already exists"})
+  if(user) return res.status(400).send({message: "username or email already exists, please login"})
 
-  let refUser = await User.findOne({ username: referredBy})
-  const util = await Util.findOne()
-
-  
   try{
-    user = new User({fullName, username, email, password, country, phone, referredBy: refUser?.username})
-    const salt = await bcrypt.genSalt(10)
-    user.password = await bcrypt.hash(password, salt)
-    const token = await user.genAuthToken()
-    
-    if(refUser) {
-      refUser.bonus += util.bonus
-      refUser = await refUser.save()
-    }
-    
-    
-    user = await user.save()
-    verifyMail(user.email)
-    res.send({token, user})
+    const otp = await new Otp({email}).save()
+
+    otpMail(email, otp.code)
+    res.send({message: 'success'})
   }
   catch(e){ for(i in e.errors) res.status(500).send({message: e.errors[i].message}) }
 })
 
+
+
+//create a new user
+router.post('/otp', async (req, res) => {
+  const {username, email, password, referredBy} = req.body
+  
+  try{
+    let user = await User.findOne({ email })
+    console.log(req.body)
+
+    if(!user) {
+      user = new User({username, email, password, referredBy})
+      const salt = await bcrypt.genSalt(10)
+      user.password = await bcrypt.hash(password, salt)
+
+      user = await user.save()
+      welcomeMail(email)
+      res.send({user})
+    } else {
+      const validatePassword = await bcrypt.compare(password, user.password)
+      if(!validatePassword) return res.status(400).send({message: "Invalid password"})
+    
+      res.send({user})
+    }
+  }
+  catch(e){ for(i in e.errors) res.status(500).send({message: e.errors[i].message}) }
+})
+
+
+
+//resend - otp
+router.post('/resend-otp', async (req, res) => {
+  const {email} = req.body
+
+  try{
+    const otp = await new Otp({email}).save()
+    otpMail(email, otp.code)
+    res.send({message: 'success'})
+  }
+  catch(e){ for(i in e.errors) res.status(500).send({message: e.errors[i].message}) }
+})
 
 
 // reset password
@@ -148,7 +132,6 @@ router.post('/reset-password', async(req, res) => {
     passwordReset(email)
     res.send({message: "Password reset link sent successfully"})
   } catch (error) { return res.status(500).send({message: "Something Went Wrong..."}) }
-
 })
 
 
@@ -166,8 +149,18 @@ router.post('/new-password', async(req, res) => {
     user = await user.save()
     res.send({message: "Password changed successfully"})
   } catch (error) { return res.status(500).send({message: "Something Went Wrong..."}) }
-
 })
 
+router.put("/update-profile", async (req, res) => {
+  let user = await User.findOne({email: req.body.email});
+  if (!user) return res.status(404).send({message: "User not found"});
+  
+  try {
+    user.set(req.body);
+
+    user = await user.save();
+    res.send({user})
+  } catch(e){ for(i in e.errors) res.status(500).send({message: e.errors[i].message}) }
+})
 
 module.exports = router

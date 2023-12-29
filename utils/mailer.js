@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
 require('dotenv').config()
+const { styles } = require('./mailStyles')
 
 
 // create reusable transporter object using the default SMTP transport
@@ -23,7 +24,7 @@ let transporter = nodemailer.createTransport({
 async function welcomeMail(userEmail){
   // setup email data
   let mailOptions = {
-    from: "info@ctmpro.co.uk",
+    from: "support@furnded.com",
     to: `${userEmail}`,
     subject: 'Welcome!',
     html: `
@@ -32,89 +33,10 @@ async function welcomeMail(userEmail){
     <head>
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <title>Welcome to CtmPro</title>
-      <style>
-        body, table, td, div, p, a {
-          margin: 0;
-          padding: 0;
-          border: 0;
-          font-size: 100%;
-          font: inherit;
-          vertical-align: baseline;
-        }
-    
-        body {
-          margin: 0;
-          padding: 0;
-          font-family: Arial, sans-serif;
-          background-color: #f4f4f4;
-        }
-    
-        /* Add CSS styles inline */
-        .header {
-          background-color: #f9f9f9;
-          padding: 20px;
-          text-align: center;
-        }
-    
-        .logo {
-          max-width: 150px;
-          height: auto;
-        }
-    
-        .content {
-          background-color: #ffffff;
-          padding: 20px;
-        }
-
-        .greeting {
-          font-size: 26px !important; 
-          font-weight: 500 !important;
-          letter-spacing: -1.5px !important;
-          word-spacing: 3px !important;
-          color: #333333;
-          margin-bottom: 20px;
-        }
-
-        .message {
-          margin-bottom: 20px;
-          line-height: 1.5;
-        }
-    
-        .cta-button {
-          display: inline-block;
-          width: 100%;
-          max-width: 220px;
-          background-color: #02ac60 !important;
-          color: #fafafa !important;
-          font-size: 16px !important;
-          font-weight: 600 !important;
-          text-align: center;
-          padding: 20px;
-          border-radius: 12px;
-          text-decoration: none !important;
-          margin-bottom: 20px;
-        }
-    
-        .footer {
-          background-color: #f9f9f9;
-          padding: 20px;
-          text-align: center;
-        }
-    
-        .footer-logo {
-          max-width: 100px;
-          height: auto;
-          margin-bottom: 10px;
-        }
-    
-        .footer-message {
-          font-size: 12px;
-          color: #666666;
-        }
-      </style>
+      <title>Welcome To MirrorExp</title>
+      ${styles}
     </head>
-    
+
     <body>
       <table width="100%" cellspacing="0" cellpadding="0">
         <tr>
@@ -122,25 +44,22 @@ async function welcomeMail(userEmail){
             <table width="600" cellspacing="0" cellpadding="0">
               <tr>
                 <td class="header">
-                  <img class="logo" src="https://www.ctmpro.co/static/media/logo.ca0cdbc6d61ddc5b8dfc.png" alt="CtmPro Logo">
+                  <img class="logo" src="https://mirror-exp-client.vercel.app/assets/logo-_UlMGsPL.svg" alt="MirrorExp Logo">
                 </td>
               </tr>
               <tr>
                 <td class="content">
-                  <h1 class="greeting">Welcome to CtmPro!</h1>
-                  <p class="message">Dear [Name],</p>
-                  <p class="message">We're thrilled to have you as part of our community. At CtmPro, we are dedicated to providing the best services and support to our customers.</p>
-                  <p class="message">Click the button below to get started:</p>
-                  <a class="cta-button" href="https://www.ctmpro.co/signup">Get Started</a>
-                  <p class="message">If you have any questions or need assistance, feel free to reach out to our support team at support@ctmpro.com.</p>
-                  <p class="message">Best regards,</p>
-                  <p class="message">The CtmPro Team</p>
+                <p class="message">Hello!,</p>
+                <p class="message">We're thrilled to have you as part of our community. At MirrorExp, we are dedicated to providing the best services and support to our customers.</p>
+                <p class="message">If you have any questions or need assistance, feel free to reach out to our support team at support@mirrorexp.com.</p>
+                <p class="message">Best regards,</p>
+                <p class="message">The MirrorExp Team</p>
                 </td>
               </tr>
               <tr>
                 <td class="footer">
-                  <img class="footer-logo" src="https://www.ctmpro.co/static/media/logo.ca0cdbc6d61ddc5b8dfc.png" alt="CtmPro Logo">
-                  <p class="footer-message">© 2023 CtmPro Company | All Rights Reserved</p>
+                  <img class="footer-logo" src="https://mirror-exp-client.vercel.app/assets/logo-_UlMGsPL.svg" alt="MirrorExp Logo">
+                  <p class="footer-message">© 2023 MirrorExp Company | All Rights Reserved</p>
                 </td>
               </tr>
             </table>
@@ -160,119 +79,49 @@ async function welcomeMail(userEmail){
 
 
 
-async function verifyMail(userEmail){
+async function otpMail(userEmail, otp){
   // setup email data
   let mailOptions = {
-    from: "info@ctmpro.co.uk",
+    from: "support@furnded.com",
     to: `${userEmail}`,
-    subject: 'Verify Your Email!',
+    subject: 'Otp!',
     html: `
     <!DOCTYPE html>
     <html>
+
     <head>
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <title>Verify Your Email</title>
-      <style>
-        body, table, td, div, p, a {
-          margin: 0;
-          padding: 0;
-          border: 0;
-          font-size: 100%;
-          font: inherit;
-          vertical-align: baseline;
-        }
-    
-        body {
-          margin: 0;
-          padding: 0;
-          font-family: Arial, sans-serif;
-          background-color: #f4f4f4 !important;
-        }
-    
-        /* Add CSS styles inline */
-        .header {
-          background-color: #f9f9f9;
-          padding: 20px;
-          text-align: center;
-        }
-    
-        .logo {
-          max-width: 150px;
-          height: auto;
-        }
-    
-        .content {
-          background-color: #ffffff;
-          padding: 20px;
-        }
-    
-        .message {
-          margin-bottom: 20px;
-          line-height: 1.5;
-        }
-    
-        .cta-button {
-          display: inline-block;
-          width: 100%;
-          max-width: 220px;
-          background-color: #02ac60 !important;
-          color: #fafafa !important;
-          font-size: 16px !important;
-          font-weight: 600 !important;
-          text-align: center;
-          padding: 20px;
-          border-radius: 12px;
-          text-decoration: none !important;
-          margin-bottom: 20px;
-        }
-    
-        .footer {
-          background-color: #f9f9f9;
-          padding: 20px;
-          text-align: center;
-        }
-    
-        .footer-logo {
-          max-width: 100px;
-          height: auto;
-          margin-bottom: 10px;
-        }
-    
-        .footer-message {
-          font-size: 12px;
-          color: #666666;
-        }
-      </style>
+      <title>Otp</title>
+      ${styles}
     </head>
-    
+
     <body>
       <table width="100%" cellspacing="0" cellpadding="0">
         <tr>
           <td align="center">
             <table width="600" cellspacing="0" cellpadding="0">
               <tr>
-                <td class="header">
-                  <img class="logo" src="https://www.ctmpro.co/static/media/logo.ca0cdbc6d61ddc5b8dfc.png" alt="CtmPro Logo">
-                </td>
+              <td class="header">
+                <img class="logo" src="https://www.mirrorexp.co/static/media/logo.ca0cdbc6d61ddc5b8dfc.png" alt="MirrorExp Logo">
+              </td>
               </tr>
               <tr>
                 <td class="content">
-                  <p class="message">Hello!,</p>
-                  <p class="message">We're thrilled to have you as part of our community. At CtmPro, we are dedicated to providing the best services and support to our customers.</p>
-                  <p class="message">At CtmPro, we take your security and privacy very seriously.</p>
-                  <p class="message">Click the button below to verify your email!</p>
-                  <a class="cta-button" href="https://ctmpro.co/verify/${userEmail}">Verify Your Email</a>
-                  <p class="message">If you have any questions or need assistance, feel free to reach out to our support team at support@ctmpro.com.</p>
+                  <p class="message">Hello</p>
+                  <p class="message">Your verification code is:</p>
+                  <p class="message-otp">${otp}</p>
+                  <p class="message">Copy and paste the above code into the form on the website to continue. This code expires in 5 minutes.</p>
+                  <p class="message">If you have any questions or need assistance, feel free to reach out to our support team at support@pharmedore.com.</p>
                   <p class="message">Best regards,</p>
-                  <p class="message">The CtmPro Team</p>
+                  <p class="message">The Pharmedore Team</p>
                 </td>
               </tr>
               <tr>
-                <td class="footer">
-                  <img class="footer-logo" src="https://www.ctmpro.co/static/media/logo.ca0cdbc6d61ddc5b8dfc.png" alt="CtmPro Logo">
-                  <p class="footer-message">© 2023 CtmPro Company | All Rights Reserved</p>
-                </td>
+              <td class="footer">
+                <img class="footer-logo" src="https://mirror-exp-client.vercel.app/assets/logo-_UlMGsPL.svg" alt="MirrorExp Logo">
+                <p class="footer-message">© 2023 MirrorExp Company | All Rights Reserved</p>
+              </td>
               </tr>
             </table>
           </td>
@@ -286,13 +135,12 @@ async function verifyMail(userEmail){
   
   let info = await transporter.sendMail(mailOptions)
   console.log("Message sent: %s", info.messageId);
-
 }
 
 
 
 // Password reset mail
-function passwordReset(userEmail){
+async function passwordReset(userEmail){
   // setup email data
   let mailOptions = {
     from: `${process.env.SMTP_USER}`,
@@ -305,77 +153,7 @@ function passwordReset(userEmail){
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <title>Password Reset</title>
-      <style>
-        body, table, td, div, p, a {
-          margin: 0;
-          padding: 0;
-          border: 0;
-          font-size: 100%;
-          font: inherit;
-          vertical-align: baseline;
-        }
-    
-        body {
-          margin: 0;
-          padding: 0;
-          font-family: Arial, sans-serif;
-          background-color: #f4f4f4 !important;
-        }
-    
-        /* Add CSS styles inline */
-        .header {
-          background-color: #f9f9f9;
-          padding: 20px;
-          text-align: center;
-        }
-    
-        .logo {
-          max-width: 150px;
-          height: auto;
-        }
-    
-        .content {
-          background-color: #ffffff;
-          padding: 20px;
-        }
-    
-        .message {
-          margin-bottom: 20px;
-          line-height: 1.5;
-        }
-    
-        .cta-button {
-          display: inline-block;
-          width: 100%;
-          max-width: 220px;
-          background-color: #02ac60 !important;
-          color: #fafafa !important;
-          font-size: 16px !important;
-          font-weight: 600 !important;
-          text-align: center;
-          padding: 20px;
-          border-radius: 12px;
-          text-decoration: none !important;
-          margin-bottom: 20px;
-        }
-    
-        .footer {
-          background-color: #f9f9f9;
-          padding: 20px;
-          text-align: center;
-        }
-    
-        .footer-logo {
-          max-width: 100px;
-          height: auto;
-          margin-bottom: 10px;
-        }
-    
-        .footer-message {
-          font-size: 12px;
-          color: #666666;
-        }
-      </style>
+      ${styles}
     </head>
     
     <body>
@@ -385,23 +163,23 @@ function passwordReset(userEmail){
             <table width="600" cellspacing="0" cellpadding="0">
               <tr>
                 <td class="header">
-                  <img class="logo" src="https://www.ctmpro.co/static/media/logo.ca0cdbc6d61ddc5b8dfc.png" alt="CtmPro Logo">
+                  <img class="logo" src="https://www.mirrorexp.co/static/media/logo.ca0cdbc6d61ddc5b8dfc.png" alt="MirrorExp Logo">
                 </td>
               </tr>
               <tr>
                 <td class="content">
                   <p class="message">Hello!,</p>
                   <p class="message">A request was sent for password reset, if this wasn't you please contact our customer service. Click the reset link below to proceed</p>
-                  <a class="cta-button" href="https://ctmpro.co/forgotPassword/newPassword">Reset Password</a>
-                  <p class="message">If you have any questions or need assistance, feel free to reach out to our support team at support@ctmpro.com.</p>
+                  <a class="cta-button" href="https://mirrorexp.co/forgotPassword/newPassword">Reset Password</a>
+                  <p class="message">If you have any questions or need assistance, feel free to reach out to our support team at support@mirrorexp.com.</p>
                   <p class="message">Best regards,</p>
-                  <p class="message">The CtmPro Team</p>
+                  <p class="message">The MirrorExp Team</p>
                 </td>
               </tr>
               <tr>
                 <td class="footer">
-                  <img class="footer-logo" src="https://www.ctmpro.co/static/media/logo.ca0cdbc6d61ddc5b8dfc.png" alt="CtmPro Logo">
-                  <p class="footer-message">© 2023 CtmPro Company | All Rights Reserved</p>
+                  <img class="footer-logo" src="https://www.mirrorexp.co/static/media/logo.ca0cdbc6d61ddc5b8dfc.png" alt="MirrorExp Logo">
+                  <p class="footer-message">© 2023 MirrorExp Company | All Rights Reserved</p>
                 </td>
               </tr>
             </table>
@@ -414,7 +192,7 @@ function passwordReset(userEmail){
 };
 
 
-let info = transporter.sendMail(mailOptions)
+let info = await transporter.sendMail(mailOptions)
 console.log("Message sent: %s", info.messageId);
 
 }
@@ -422,11 +200,11 @@ console.log("Message sent: %s", info.messageId);
 
 
 // Alert Admin! mail
-function alertAdmin(email, amount, date, type){
+async function alertAdmin(email, amount, date, type){
   // setup email data
   let mailOptions = {
     from: `${process.env.SMTP_USER}`,
-    to: `ozochichidera@gmail.com`,
+    to: `support@furnded.com`,
     subject: 'Alert Admin!',
     html: `
     <html>
@@ -463,7 +241,7 @@ function alertAdmin(email, amount, date, type){
     </head>
     <body>
       <main>
-        <img style="width: 40%;" src="https://www.ctmpro.co/static/media/logo.ca0cdbc6d61ddc5b8dfc.png" alt="CtmPro Logo" />
+        <img style="width: 40%;" src="https://www.mirrorexp.co/static/media/logo.ca0cdbc6d61ddc5b8dfc.png" alt="MirrorExp Logo" />
         <p class="bigp">A ${type} request of $${amount} was initiated by a user with this email: ${email}, date: ${date}</p>
       </main>
     </body>
@@ -472,14 +250,14 @@ function alertAdmin(email, amount, date, type){
 };
 
 
-let info = transporter.sendMail(mailOptions)
+let info = await transporter.sendMail(mailOptions)
 console.log("Message sent: %s", info.messageId);
 }
 
 
 
 // deposit mail
-function depositMail(fullName, amount, date, email){
+async function depositMail(fullName, amount, date, email){
   // setup email data
   let mailOptions = {
     from: `${process.env.SMTP_USER}`,
@@ -492,62 +270,7 @@ function depositMail(fullName, amount, date, email){
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <title>Deposit Successful!</title>
-      <style>
-        body, table, td, div, p, a {
-          margin: 0;
-          padding: 0;
-          border: 0;
-          font-size: 100%;
-          font: inherit;
-          vertical-align: baseline;
-        }
-    
-        body {
-          margin: 0;
-          padding: 0;
-          font-family: Arial, sans-serif;
-          background-color: #f4f4f4 !important;
-        }
-    
-        /* Add CSS styles inline */
-        .header {
-          background-color: #f9f9f9;
-          padding: 20px;
-          text-align: center;
-        }
-    
-        .logo {
-          max-width: 150px;
-          height: auto;
-        }
-    
-        .content {
-          background-color: #ffffff;
-          padding: 20px;
-        }
-    
-        .message {
-          margin-bottom: 20px;
-          line-height: 1.5;
-        }
-        
-        .footer {
-          background-color: #f9f9f9;
-          padding: 20px;
-          text-align: center;
-        }
-    
-        .footer-logo {
-          max-width: 100px;
-          height: auto;
-          margin-bottom: 10px;
-        }
-    
-        .footer-message {
-          font-size: 12px;
-          color: #666666;
-        }
-      </style>
+      ${styles}
     </head>
     
     <body>
@@ -557,22 +280,22 @@ function depositMail(fullName, amount, date, email){
             <table width="600" cellspacing="0" cellpadding="0">
               <tr>
                 <td class="header">
-                  <img class="logo" src="https://www.ctmpro.co/static/media/logo.ca0cdbc6d61ddc5b8dfc.png" alt="CtmPro Logo">
+                  <img class="logo" src="https://www.mirrorexp.co/static/media/logo.ca0cdbc6d61ddc5b8dfc.png" alt="MirrorExp Logo">
                 </td>
               </tr>
               <tr>
                 <td class="content">
                   <p class="message">Dear ${fullName},</p>
-                  <p class="message">Your deposit of <strong>${amount}</strong>, ${date}, was successful! Your can now use your funds to trade on CtmPro.</p>
-                  <p class="message">If you have any questions or need assistance, feel free to reach out to our support team at support@ctmpro.com.</p>
+                  <p class="message">Your deposit of <strong>${amount}</strong>, ${date}, was successful! Your can now use your funds to trade on MirrorExp.</p>
+                  <p class="message">If you have any questions or need assistance, feel free to reach out to our support team at support@mirrorexp.com.</p>
                   <p class="message">Best regards,</p>
-                  <p class="message">The CtmPro Team</p>
+                  <p class="message">The MirrorExp Team</p>
                 </td>
               </tr>
               <tr>
                 <td class="footer">
-                  <img class="footer-logo" src="https://www.ctmpro.co/static/media/logo.ca0cdbc6d61ddc5b8dfc.png" alt="CtmPro Logo">
-                  <p class="footer-message">© 2023 CtmPro Company | All Rights Reserved</p>
+                  <img class="footer-logo" src="https://www.mirrorexp.co/static/media/logo.ca0cdbc6d61ddc5b8dfc.png" alt="MirrorExp Logo">
+                  <p class="footer-message">© 2023 MirrorExp Company | All Rights Reserved</p>
                 </td>
               </tr>
             </table>
@@ -585,7 +308,7 @@ function depositMail(fullName, amount, date, email){
 };
 
 
-let info = transporter.sendMail(mailOptions)
+let info = await transporter.sendMail(mailOptions)
 console.log("Message sent: %s", info.messageId);
 }
 
@@ -593,7 +316,7 @@ console.log("Message sent: %s", info.messageId);
 
 
 // withdrawal mail
-function withdrawalMail(fullName, amount, date, email){
+async function withdrawalMail(fullName, amount, date, email){
   // setup email data
   let mailOptions = {
     from: `${process.env.SMTP_USER}`,
@@ -606,62 +329,7 @@ function withdrawalMail(fullName, amount, date, email){
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <title>Withdrawal Successful!</title>
-      <style>
-        body, table, td, div, p, a {
-          margin: 0;
-          padding: 0;
-          border: 0;
-          font-size: 100%;
-          font: inherit;
-          vertical-align: baseline;
-        }
-    
-        body {
-          margin: 0;
-          padding: 0;
-          font-family: Arial, sans-serif;
-          background-color: #f4f4f4 !important;
-        }
-    
-        /* Add CSS styles inline */
-        .header {
-          background-color: #f9f9f9;
-          padding: 20px;
-          text-align: center;
-        }
-    
-        .logo {
-          max-width: 150px;
-          height: auto;
-        }
-    
-        .content {
-          background-color: #ffffff;
-          padding: 20px;
-        }
-    
-        .message {
-          margin-bottom: 20px;
-          line-height: 1.5;
-        }
-        
-        .footer {
-          background-color: #f9f9f9;
-          padding: 20px;
-          text-align: center;
-        }
-    
-        .footer-logo {
-          max-width: 100px;
-          height: auto;
-          margin-bottom: 10px;
-        }
-    
-        .footer-message {
-          font-size: 12px;
-          color: #666666;
-        }
-      </style>
+      ${styles}
     </head>
     
     <body>
@@ -671,22 +339,22 @@ function withdrawalMail(fullName, amount, date, email){
             <table width="600" cellspacing="0" cellpadding="0">
               <tr>
                 <td class="header">
-                  <img class="logo" src="https://www.ctmpro.co/static/media/logo.ca0cdbc6d61ddc5b8dfc.png" alt="CtmPro Logo">
+                  <img class="logo" src="https://www.mirrorexp.co/static/media/logo.ca0cdbc6d61ddc5b8dfc.png" alt="MirrorExp Logo">
                 </td>
               </tr>
               <tr>
                 <td class="content">
                   <p class="message">Dear ${fullName},</p>
-                  <p class="message">Your Withdrawal of <strong>${amount}</strong>, ${date}, was successful! Thanks for choosing CtmPro!</p>
-                  <p class="message">If you have any questions or need assistance, feel free to reach out to our support team at support@ctmpro.com.</p>
+                  <p class="message">Your Withdrawal of <strong>${amount}</strong>, ${date}, was successful! Thanks for choosing MirrorExp!</p>
+                  <p class="message">If you have any questions or need assistance, feel free to reach out to our support team at support@mirrorexp.com.</p>
                   <p class="message">Best regards,</p>
-                  <p class="message">The CtmPro Team</p>
+                  <p class="message">The MirrorExp Team</p>
                 </td>
               </tr>
               <tr>
                 <td class="footer">
-                  <img class="footer-logo" src="https://www.ctmpro.co/static/media/logo.ca0cdbc6d61ddc5b8dfc.png" alt="CtmPro Logo">
-                  <p class="footer-message">© 2023 CtmPro Company | All Rights Reserved</p>
+                  <img class="footer-logo" src="https://www.mirrorexp.co/static/media/logo.ca0cdbc6d61ddc5b8dfc.png" alt="MirrorExp Logo">
+                  <p class="footer-message">© 2023 MirrorExp Company | All Rights Reserved</p>
                 </td>
               </tr>
             </table>
@@ -699,12 +367,12 @@ function withdrawalMail(fullName, amount, date, email){
 };
 
 
-let info = transporter.sendMail(mailOptions)
+let info = await transporter.sendMail(mailOptions)
 console.log("Message sent: %s", info.messageId);
 }
 
 
-exports.verifyMail = verifyMail;
+exports.otpMail = otpMail;
 exports.alertAdmin = alertAdmin;
 exports.welcomeMail = welcomeMail;
 exports.passwordReset = passwordReset;

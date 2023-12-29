@@ -6,9 +6,8 @@ const jwt = require("jsonwebtoken");
 const userSchema = new mongoose.Schema({
   fullName: {
     type: String,
-    required: true,
-    minLength: 3,
-    maxLength: 20
+    maxLength: 20,
+    default: "",
   },
   username: {
     type: String,
@@ -27,11 +26,30 @@ const userSchema = new mongoose.Schema({
     maxLength: 15,
     default: "",
   },
+  address: {
+    type: String,
+    maxLength: 50,
+    default: "",
+  },
+  state: {
+    type: String,
+    maxLength: 50,
+    default: "",
+  },
+  city: {
+    type: String,
+    maxLength: 50,
+    default: "",
+  },
+  zipCode: {
+    type: String,
+    maxLength: 50,
+    default: "",
+  },
   country: {
     type: String,
-    required: true,
-    minLength: 3,
-    maxLength: 15
+    maxLength: 15,
+    default: "",
   },
   password: {
     type: String,
@@ -39,7 +57,12 @@ const userSchema = new mongoose.Schema({
     minLength: 5,
     maxLength: 1000
   },
-  balance: {
+  deposit: {
+    type: Number,
+    default: 0,
+    minLength: 0,
+  },
+  interest: {
     type: Number,
     default: 0,
     minLength: 0,
@@ -68,7 +91,7 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  isVerified: {
+  mfa: {
     type: Boolean,
     default: false,
   },
@@ -76,6 +99,15 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  rank: {
+    type: String,
+    maxLength: 50,
+    default: "welcome",
+  }
 });
 
 
@@ -88,12 +120,9 @@ const User = mongoose.model("User", userSchema);
 
 const  validateUser = (user) => {
   const schema = {
-    fullName: Joi.string().min(3).max(20).required(),
     username: Joi.string().min(3).max(20).required(),
     email: Joi.string().min(5).max(225).required(),
-    country: Joi.string().min(2).max(20).required(),
     password: Joi.string().min(5).max(20).required(),
-    phone: Joi.string().min(0).max(15).allow(''),
     referredBy: Joi.string().min(0).max(50).allow(''),
   }
 
